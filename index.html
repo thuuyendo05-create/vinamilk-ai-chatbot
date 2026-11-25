@@ -206,8 +206,8 @@
       background: #f4f6fb;
     }
     .msg {
-      max-width: 92%;
-      padding: 13px 16px;
+      max-width: 93%;
+      padding: 14px 16px;
       border-radius: 16px;
       line-height: 1.6;
       font-size: 15px;
@@ -250,27 +250,24 @@
     }
     .product-row {
       font-size: 14.5px;
+      line-height: 1.58;
+      color: #1e293b;
+      margin-bottom: 7px;
+    }
+    .product-row strong,
+    .detail-label {
+      color: #0213b0;
+      font-weight: 700;
+    }
+    .clean-line {
+      margin-top: 3px;
+      font-size: 14.5px;
       line-height: 1.55;
       color: #1e293b;
-      margin-bottom: 6px;
-    }
-    .product-row strong {
-      color: #0213b0;
-      font-weight: 600;
-    }
-    .variant-line {
-      margin-top: 4px;
-      padding-left: 10px;
-      font-size: 14px;
-      line-height: 1.5;
-      color: #1e293b;
-    }
-    .variant-line strong {
-      color: #0213b0;
     }
     .deeplink-box {
       margin-top: 10px;
-      padding-top: 8px;
+      padding-top: 9px;
       border-top: 1px dashed #dbe2f0;
       display: flex;
       flex-wrap: wrap;
@@ -288,7 +285,7 @@
     }
     .product-btn {
       display: inline-block;
-      padding: 7px 13px;
+      padding: 7px 14px;
       border: 1.5px solid #0213b0;
       border-radius: 999px;
       color: #0213b0;
@@ -449,6 +446,12 @@
         .replace(/"/g, "&quot;");
     }
 
+    function stripLeadingSymbols(str) {
+      return String(str || "")
+        .replace(/^\s*(?:•|-|\*|·|\+|–|—|\d+[.)])\s*/g, "")
+        .trim();
+    }
+
     function cleanInlineMarkdown(str) {
       return escapeHtml(str || "")
         .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
@@ -472,36 +475,32 @@
       return `vinamilk://san-pham/${toSlug(title)}`;
     }
 
-    function splitPriceVariants(rawPrice) {
-      const cleaned = String(rawPrice || "").trim();
+    function splitPriceLines(rawPrice) {
+      const cleaned = stripLeadingSymbols(rawPrice);
       if (!cleaned) return [];
-      // Tách nhiều loại/quy cách nếu có dấu " / " hoặc xuống dòng
       const parts = cleaned
-        .split(/\s*\/\s*|\n+/)
-        .map((s) => s.trim())
+        .split(/\s*(?:\/|\|)\s*|\n+/)
+        .map((s) => stripLeadingSymbols(s))
         .filter(Boolean);
       return parts.map((part) => {
         const colonIdx = part.indexOf(":");
-        if (colonIdx > 0 && colonIdx < 32) {
+        if (colonIdx > 0 && colonIdx < 34) {
           const label = cleanInlineMarkdown(part.slice(0, colonIdx));
           const val = cleanInlineMarkdown(part.slice(colonIdx + 1));
-          return `<div class="variant-line">• <strong>${label}:</strong> ${val}</div>`;
+          return `<div class="clean-line"><strong>${label}:</strong> ${val}</div>`;
         }
-        return `<div class="variant-line">• ${cleanInlineMarkdown(part)}</div>`;
+        return `<div class="clean-line">${cleanInlineMarkdown(part)}</div>`;
       });
     }
 
     function splitUsageLines(rawUsage) {
-      const cleaned = String(rawUsage || "").trim();
+      const cleaned = stripLeadingSymbols(rawUsage);
       if (!cleaned) return [];
       const sentences = cleaned
-        .split(/(?<=[.!?])\s+/)
-        .map((s) => s.trim())
+        .split(/(?<=[.!?])\s+|\n+/)
+        .map((s) => stripLeadingSymbols(s))
         .filter(Boolean);
-      if (sentences.length <= 1) {
-        return [`<div class="variant-line">• ${cleanInlineMarkdown(cleaned)}</div>`];
-      }
-      return sentences.map((s) => `<div class="variant-line">• ${cleanInlineMarkdown(s)}</div>`);
+      return sentences.map((s) => `<div class="clean-line">${cleanInlineMarkdown(s)}</div>`);
     }
 
     function formatPlainBotMessage(rawText) {
@@ -513,7 +512,7 @@
         return `${prefix}<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a>`;
       });
       text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-      text = text.replace(/^\s*\*\s+/gm, "• ");
+      text = text.replace(/^\s*(?:•|-|\*|·)\s*/gm, "");
       text = text.replace(/\*+/g, "");
       text = text.replace(/\n/g, "<br>");
       return text;
@@ -532,14 +531,12 @@
       function isProductTitleLine(line) {
         const trimmed = line.trim();
         if (!trimmed) return false;
-        if (/^(•|-|\*|\d+\.)\s*/.test(trimmed)) return false;
         const noStar = trimmed.replace(/\*+/g, "");
-        if (/^(đối tượng sử dụng|giá bán|giá bán tham khảo|link sản phẩm|chi tiết|thành phần|thông tin dinh dưỡng|hướng dẫn sử dụng|dạng túi|dạng chai|dạng hộp|dạng lốc|dạng thùng)\s*:/i.test(noStar)) {
+        if (/^(nhóm|đối tượng|đối tượng sử dụng|giá bán|giá bán tham khảo|link sản phẩm|chi tiết|thành phần|thành phần chính|thông tin dinh dưỡng|hướng dẫn sử dụng|dạng túi|dạng chai|dạng hộp|dạng lốc|dạng thùng)\s*:/i.test(stripLeadingSymbols(noStar))) {
           return false;
         }
         if (trimmed.endsWith(":")) return false;
-        const boldMatch = trimmed.match(/^\*\*([^*]+)\*\*$/);
-        if (boldMatch) return true;
+        if (/^\*\*([^*]+)\*\*$/.test(trimmed)) return true;
         return cards.length > 0 || /sữa|kem|phô mai|váng sữa|yoghurt|susu|dielac|optimum|yoko|green farm|adm|ngôi sao/i.test(trimmed);
       }
 
@@ -548,14 +545,17 @@
         if (!line) continue;
 
         const plainLine = line.replace(/\*+/g, "").trim();
+        const strippedLine = stripLeadingSymbols(plainLine);
 
-        if (/^[-•*]?\s*link sản phẩm\s*:?\s*$/i.test(plainLine)) {
+        if (!strippedLine) continue;
+
+        if (/^link sản phẩm\s*:?\s*$/i.test(strippedLine)) {
           continue;
         }
 
         const mdLinkMatch = line.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
         const rawUrlMatch = line.match(/(https?:\/\/[^\s<)]+)/);
-        if ((mdLinkMatch || rawUrlMatch) && !/^[-•*]?\s*(đối tượng|giá bán)/i.test(plainLine)) {
+        if ((mdLinkMatch || rawUrlMatch) && !/^(đối tượng|giá bán)/i.test(strippedLine)) {
           const url = mdLinkMatch ? mdLinkMatch[2] : rawUrlMatch[1];
           if (currentCard) {
             currentCard.webUrl = url;
@@ -568,11 +568,14 @@
 
         if (isProductTitleLine(line)) {
           if (currentCard) cards.push(currentCard);
-          const titleClean = line.replace(/^\*\*([^*]+)\*\*$/, "$1").replace(/\*+/g, "").trim();
+          const titleClean = stripLeadingSymbols(line.replace(/^\*\*([^*]+)\*\*$/, "$1").replace(/\*+/g, ""));
           currentCard = {
             title: titleClean,
+            group: "",
             target: "",
             price: "",
+            ingredient: "",
+            nutrition: "",
             usage: "",
             extra: [],
             deeplink: buildDeeplink(titleClean),
@@ -583,45 +586,52 @@
         }
 
         if (currentCard) {
-          const itemStripped = plainLine.replace(/^(•|-|\*)\s*/, "");
-
-          if (/^đối tượng sử dụng\s*:/i.test(itemStripped)) {
-            currentCard.target = itemStripped.replace(/^đối tượng sử dụng\s*:/i, "").trim();
+          if (/^nhóm\s*:/i.test(strippedLine)) {
+            currentCard.group = strippedLine.replace(/^nhóm\s*:/i, "").trim();
+            currentField = "group";
+          } else if (/^đối tượng(\s*sử dụng)?\s*:/i.test(strippedLine)) {
+            currentCard.target = strippedLine.replace(/^đối tượng(\s*sử dụng)?\s*:/i, "").trim();
             currentField = "target";
-          } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(itemStripped)) {
-            currentCard.price = itemStripped.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
+          } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(strippedLine)) {
+            currentCard.price = strippedLine.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
             currentField = "price";
-          } else if (/^hướng dẫn sử dụng\s*:/i.test(itemStripped)) {
-            currentCard.usage = itemStripped.replace(/^hướng dẫn sử dụng\s*:/i, "").trim();
+          } else if (/^thành phần(\s*chính)?\s*:/i.test(strippedLine)) {
+            currentCard.ingredient = strippedLine.replace(/^thành phần(\s*chính)?\s*:/i, "").trim();
+            currentField = "ingredient";
+          } else if (/^thông tin dinh dưỡng[^:]*:/i.test(strippedLine)) {
+            const labelMatch = strippedLine.match(/^([^:]+:)/);
+            const labelText = labelMatch ? labelMatch[1].trim() : "Thông tin dinh dưỡng:";
+            const bodyText = strippedLine.replace(/^[^:]+:\s*/, "").trim();
+            currentCard.nutrition = bodyText ? `<strong>${cleanInlineMarkdown(labelText)}</strong> ${cleanInlineMarkdown(bodyText)}` : `<strong>${cleanInlineMarkdown(labelText)}</strong>`;
+            currentField = "nutrition";
+          } else if (/^hướng dẫn sử dụng\s*:/i.test(strippedLine)) {
+            currentCard.usage = strippedLine.replace(/^hướng dẫn sử dụng\s*:/i, "").trim();
             currentField = "usage";
-          } else if (/^chi tiết\s*:/i.test(itemStripped)) {
-            const possibleUrl = itemStripped.replace(/^chi tiết\s*:/i, "").trim();
+          } else if (/^chi tiết\s*:/i.test(strippedLine)) {
+            const possibleUrl = strippedLine.replace(/^chi tiết\s*:/i, "").trim();
             if (/^https?:\/\//i.test(possibleUrl)) {
               currentCard.webUrl = possibleUrl;
             }
             currentField = null;
-          } else if (/^(•|-|\*)\s+/.test(line)) {
-            const bulletText = line.replace(/^(•|-|\*)\s+/, "");
-            if (currentField === "price") {
-              currentCard.price = currentCard.price ? `${currentCard.price} / ${bulletText}` : bulletText;
-            } else if (currentField === "usage") {
-              currentCard.usage = currentCard.usage ? `${currentCard.usage} ${bulletText}` : bulletText;
-            } else {
-              currentCard.extra.push(`• ${cleanInlineMarkdown(bulletText)}`);
-            }
           } else {
-            if (currentField === "target") {
-              currentCard.target = `${currentCard.target} ${itemStripped}`.trim();
+            if (currentField === "group") {
+              currentCard.group = `${currentCard.group} ${strippedLine}`.trim();
+            } else if (currentField === "target") {
+              currentCard.target = `${currentCard.target} ${strippedLine}`.trim();
             } else if (currentField === "price") {
-              currentCard.price = currentCard.price ? `${currentCard.price} / ${itemStripped}` : itemStripped;
+              currentCard.price = currentCard.price ? `${currentCard.price} / ${strippedLine}` : strippedLine;
+            } else if (currentField === "ingredient") {
+              currentCard.ingredient = `${currentCard.ingredient} ${strippedLine}`.trim();
+            } else if (currentField === "nutrition") {
+              currentCard.nutrition = `${currentCard.nutrition} ${cleanInlineMarkdown(strippedLine)}`.trim();
             } else if (currentField === "usage") {
-              currentCard.usage = `${currentCard.usage} ${itemStripped}`.trim();
+              currentCard.usage = `${currentCard.usage} ${strippedLine}`.trim();
             } else {
-              currentCard.extra.push(cleanInlineMarkdown(line));
+              currentCard.extra.push(cleanInlineMarkdown(strippedLine));
             }
           }
         } else {
-          introLines.push(cleanInlineMarkdown(line));
+          introLines.push(cleanInlineMarkdown(strippedLine));
         }
       }
 
@@ -639,11 +649,20 @@
       for (const c of cards) {
         html += `<div class="product-card">`;
         html += `<div class="product-title">${cleanInlineMarkdown(c.title)}</div>`;
+        if (c.group) {
+          html += `<div class="product-row"><strong>Nhóm:</strong> ${cleanInlineMarkdown(c.group)}</div>`;
+        }
         if (c.target) {
           html += `<div class="product-row"><strong>Đối tượng sử dụng:</strong> ${cleanInlineMarkdown(c.target)}</div>`;
         }
         if (c.price) {
-          html += `<div class="product-row"><strong>Giá bán tham khảo:</strong>${splitPriceVariants(c.price).join("")}</div>`;
+          html += `<div class="product-row"><strong>Giá bán tham khảo:</strong>${splitPriceLines(c.price).join("")}</div>`;
+        }
+        if (c.ingredient) {
+          html += `<div class="product-row"><strong>Thành phần chính:</strong> ${cleanInlineMarkdown(c.ingredient)}</div>`;
+        }
+        if (c.nutrition) {
+          html += `<div class="product-row">${c.nutrition}</div>`;
         }
         if (c.usage) {
           html += `<div class="product-row"><strong>Hướng dẫn sử dụng:</strong>${splitUsageLines(c.usage).join("")}</div>`;
@@ -655,7 +674,7 @@
         const targetAttr = c.webUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
         html += `<div class="deeplink-box">`;
         html += `<span class="deeplink-tag">${escapeHtml(c.deeplink)}</span>`;
-        html += `<a class="product-btn" href="${escapeHtml(hrefTarget)}"${targetAttr}>Xem sản phẩm →</a>`;
+        html += `<a class="product-btn" href="${escapeHtml(hrefTarget)}"${targetAttr}>Mở sản phẩm →</a>`;
         html += `</div>`;
         html += `</div>`;
       }
