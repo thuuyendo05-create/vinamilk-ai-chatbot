@@ -1,7 +1,6 @@
 import csv
 import os
 import re
-import time
 from datetime import datetime
 from typing import List, Optional
 
@@ -79,9 +78,9 @@ PRODUCTS = load_products_from_excel(EXCEL_PATH)
 print(f"Đã nạp thành công {len(PRODUCTS)} sản phẩm từ {EXCEL_PATH}")
 
 
-def search_relevant_products(query: str, top_k: int = 8) -> str:
+def find_matching_products(query: str, top_k: int = 6) -> List[dict]:
     if not PRODUCTS:
-        return "Chưa có dữ liệu sản phẩm từ file Excel."
+        return []
 
     tokens = [w for w in re.findall(r"\w+", query.lower()) if len(w) >= 2]
     scored = []
@@ -98,7 +97,13 @@ def search_relevant_products(query: str, top_k: int = 8) -> str:
             scored.append((score, p))
 
     scored.sort(key=lambda x: x[0], reverse=True)
-    selected = [item[1] for item in scored[:top_k]] if scored else PRODUCTS[:5]
+    return [item[1] for item in scored[:top_k]] if scored else PRODUCTS[:4]
+
+
+def search_relevant_products(query: str, top_k: int = 6) -> str:
+    selected = find_matching_products(query, top_k=top_k)
+    if not selected:
+        return "Chưa có dữ liệu sản phẩm từ file Excel."
 
     blocks = []
     for idx, p in enumerate(selected, 1):
@@ -115,25 +120,55 @@ def search_relevant_products(query: str, top_k: int = 8) -> str:
     return "\n\n".join(blocks)
 
 
+def build_direct_excel_fallback(query: str) -> str:
+    """Trả lời ngay lập tức từ dữ liệu VINAMILK.xlsx nếu API AI bị nghẽn."""
+    matched = find_matching_products(query, top_k=4)
+    if not matched:
+        return (
+            "Hiện tại hệ thống dữ liệu sản phẩm Vinamilk đang sẵn sàng. "
+            "Bạn có thể hỏi cụ thể tên sản phẩm (ví dụ: socola, Dielac, Optimum...) để mình tra cứu nhé!"
+        )
+
+    lines = [
+        "Dưới đây là thông tin sản phẩm khớp nhất từ cơ sở dữ liệu Vinamilk của hệ thống:\n"
+    ]
+    for p in matched:
+        lines.append(f"• {p['ten']} ({p['nhom']})")
+        if p["gia"]:
+            lines.append(f"  - Giá bán: {p['gia']}")
+        if p["doi_tuong"]:
+            lines.append(f"  - Đối tượng sử dụng: {p['doi_tuong']}")
+        if p["link"]:
+            lines.append(f"  - Chi tiết: {p['link']}")
+    return "\n".join(lines)
+
+
 def log_conversation(user_msg: str, bot_reply: str):
     log_file = "chat_history.csv"
     file_exists = os.path.exists(log_file)
-    with open(log_file, mode="a", newline="", encoding="utf-8-sig") as f:
-        writer = csv.writer(f)
-        if not file_exists:
-            writer.writerow(["Thoi_gian", "Cau_hoi_khach_hang", "Phan_hoi_AI"])
-        writer.writerow([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), user_msg, bot_reply])
+    try:
+        with open(log_file, mode="a", newline="", encoding="utf-8-sig") as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(["Thoi_gian", "Cau_hoi_khach_hang", "Phan_hoi_AI"])
+            writer.writerow([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), user_msg, bot_reply])
+    except OSError:
+        pass
 
 
 BASE_SYSTEM_INSTRUCTION = """
 Bạn là Trợ lý AI Chăm sóc Khách hàng & Tư vấn Kinh doanh của Vinamilk.
 Quy tắc tư vấn:
-1. Ưu tiên sử dụng DỮ LIỆU SẢN PHẨM VINAMILK được cung cấp kèm theo câu hỏi để trả lời chính xác tên sản phẩm, giá bán, đối tượng sử dụng, thành phần, giá trị dinh dưỡng, cách pha/sử dụng và gửi kèm link sản phẩm nếu có.
-2. Trình bày rõ ràng, thân thiện, có gạch đầu dòng dễ đọc.
-3. Nếu sản phẩm khách hỏi không nằm trong danh sách dữ liệu được truy xuất, hãy nói rõ danh mục hiện tại chưa có thông tin chi tiết và gợi ý liên hệ tổng đài Vinamilk 1900 636 979 hoặc website vinamilk.com.vn. Không tự bịa giá bán.
+1. Ưu tiên sử dụng DỮ LIỆU SẢN PHẨM VINAMILK được cung cấp để trả lời ngắn gọn, đúng tên sản phẩm, giá bán, đối tượng sử dụng và gửi kèm link sản phẩm nếu có.
+2. Trả lời nhanh gọn, rõ ràng, thân thiện, có gạch đầu dòng.
+3. Không tự bịa giá bán nếu không có trong dữ liệu.
 """
 
-FALLBACK_MODELS = ["gemini-3.8-flash", "gemini-2.5-flash", "gemini-2.5-flash-lite"]
+FALLBACK_MODELS = [
+    "gemini-3.5-flash-lite",
+    "gemini-3.1-flash-lite",
+    "gemini-3.8-flash",
+]
 
 
 class ChatMessage(BaseModel):
@@ -161,7 +196,7 @@ def chat_endpoint(req: ChatRequest):
     if not user_msg:
         raise HTTPException(status_code=400, detail="Tin nhắn không được để trống.")
 
-    product_context = search_relevant_products(user_msg, top_k=8)
+    product_context = search_relevant_products(user_msg, top_k=6)
     full_instruction = (
         f"{BASE_SYSTEM_INSTRUCTION}\n\n"
         f"=== DỮ LIỆU SẢN PHẨM VINAMILK TRUY XUẤT TỪ HỆ THỐNG ===\n"
@@ -170,7 +205,7 @@ def chat_endpoint(req: ChatRequest):
 
     contents = []
     if req.history:
-        for item in req.history[-8:]:
+        for item in req.history[-6:]:
             role = "model" if item.role == "model" else "user"
             contents.append(
                 types.Content(
@@ -186,29 +221,24 @@ def chat_endpoint(req: ChatRequest):
         )
     )
 
-    last_error = None
     for model_name in FALLBACK_MODELS:
-        for attempt in range(2):
-            try:
-                response = client.models.generate_content(
-                    model=model_name,
-                    contents=contents,
-                    config=types.GenerateContentConfig(
-                        system_instruction=full_instruction,
-                        temperature=0.3,
-                    ),
-                )
-                reply_text = response.text or "Xin lỗi, hiện tại mình chưa thể phản hồi câu hỏi này."
+        try:
+            response = client.models.generate_content(
+                model=model_name,
+                contents=contents,
+                config=types.GenerateContentConfig(
+                    system_instruction=full_instruction,
+                    temperature=0.2,
+                ),
+            )
+            if response.text and response.text.strip():
+                reply_text = response.text.strip()
                 log_conversation(user_msg, reply_text)
                 return ChatResponse(reply=reply_text)
-            except Exception as e:
-                last_error = str(e)
-                if "503" in last_error or "UNAVAILABLE" in last_error:
-                    time.sleep(1.5)
-                    continue
-                break
+        except Exception:
+            continue
 
-    raise HTTPException(
-        status_code=503,
-        detail=f"Hệ thống AI đang quá tải tạm thời, bạn thử gửi lại sau vài giây nhé. (Chi tiết: {last_error})",
-    )
+    # Nếu tất cả model AI gặp sự cố/quá tải, trả ngay dữ liệu thực tế từ Excel
+    fallback_reply = build_direct_excel_fallback(user_msg)
+    log_conversation(user_msg, fallback_reply)
+    return ChatResponse(reply=fallback_reply)
