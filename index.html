@@ -106,7 +106,7 @@
       cursor: pointer;
     }
 
-    /* Chatbot Widget phong cách gọn đẹp */
+    /* Chatbot Widget */
     #chat-toggle {
       position: fixed;
       bottom: 24px;
@@ -126,9 +126,9 @@
       position: fixed;
       bottom: 84px;
       right: 24px;
-      width: 390px;
+      width: 420px;
       max-width: calc(100vw - 24px);
-      height: 530px;
+      height: 560px;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 14px 36px rgba(0,0,0,0.2);
@@ -147,21 +147,27 @@
       justify-content: space-between;
       align-items: center;
     }
+    .chat-header-sub {
+      font-size: 12.5px;
+      font-weight: 400;
+      opacity: 0.9;
+      margin-top: 2px;
+    }
     #chat-messages {
       flex: 1;
-      padding: 14px;
+      padding: 16px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
       background: #f4f6fb;
     }
     .msg {
-      max-width: 88%;
-      padding: 11px 14px;
-      border-radius: 14px;
-      line-height: 1.5;
-      font-size: 13.5px;
+      max-width: 92%;
+      padding: 13px 16px;
+      border-radius: 16px;
+      line-height: 1.6;
+      font-size: 15px;
       overflow-wrap: anywhere;
       word-break: break-word;
     }
@@ -170,6 +176,7 @@
       background: #0213b0;
       color: #fff;
       border-bottom-right-radius: 4px;
+      font-weight: 500;
     }
     .msg.bot {
       align-self: flex-start;
@@ -177,15 +184,63 @@
       color: #1e293b;
       border-bottom-left-radius: 4px;
     }
+    .bot-intro {
+      margin-bottom: 12px;
+    }
+    .product-card {
+      background: #ffffff;
+      border: 1px solid #c7d4f5;
+      border-radius: 14px;
+      padding: 14px 16px;
+      margin-top: 12px;
+      box-shadow: 0 3px 10px rgba(2, 19, 176, 0.05);
+    }
+    .product-card:first-child {
+      margin-top: 0;
+    }
+    .product-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: #0213b0;
+      line-height: 1.4;
+      margin-bottom: 8px;
+    }
+    .product-row {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: #1e293b;
+      margin-bottom: 6px;
+    }
+    .product-row strong {
+      color: #0213b0;
+      font-weight: 600;
+    }
+    .product-btn {
+      display: inline-block;
+      margin-top: 8px;
+      padding: 8px 14px;
+      border: 1.5px solid #0213b0;
+      border-radius: 999px;
+      color: #0213b0;
+      background: #ffffff;
+      font-size: 13.5px;
+      font-weight: 700;
+      text-decoration: none;
+      transition: background 0.15s, color 0.15s;
+    }
+    .product-btn:hover {
+      background: #0213b0;
+      color: #ffffff;
+    }
     .msg.bot strong {
       color: #0213b0;
       font-weight: 700;
     }
     .msg.bot a.product-link {
       display: inline-block;
-      margin-top: 4px;
+      margin-top: 6px;
       color: #0213b0;
-      font-weight: 600;
+      font-weight: 700;
       text-decoration: underline;
     }
     #chat-form {
@@ -197,18 +252,19 @@
     }
     #chat-input {
       flex: 1;
-      padding: 10px 12px;
+      padding: 11px 13px;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
-      font-size: 14px;
+      font-size: 15px;
       outline: none;
     }
     #chat-send {
       background: #0213b0;
       color: #fff;
       border: none;
-      padding: 0 16px;
+      padding: 0 18px;
       border-radius: 10px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
     }
@@ -269,8 +325,11 @@
 
   <div id="chat-box">
     <div id="chat-header">
-      <span>Trợ lý AI Vinamilk</span>
-      <button id="chat-close" type="button" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">×</button>
+      <div>
+        <div>Trợ lý AI Vinamilk</div>
+        <div class="chat-header-sub">● Trực tuyến</div>
+      </div>
+      <button id="chat-close" type="button" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;">×</button>
     </div>
     <div id="chat-messages">
       <div class="msg bot">Xin chào! Mình là trợ lý AI của Vinamilk. Bạn cần tư vấn sản phẩm sữa, dinh dưỡng hay thông tin hợp tác kinh doanh nào ạ?</div>
@@ -307,37 +366,169 @@
     }
 
     function escapeHtml(str) {
-      return str
+      return String(str || "")
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
     }
 
-    function formatBotMessage(rawText) {
+    function cleanInlineMarkdown(str) {
+      return escapeHtml(str || "")
+        .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
+        .replace(/\*+/g, "")
+        .trim();
+    }
+
+    function formatPlainBotMessage(rawText) {
       let text = escapeHtml(rawText || "");
-
-      // Chuyển link Markdown [chữ](url) thành thẻ <a> gọn gàng
-      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_match, label, url) => {
-        const cleanLabel = label.replace(/\*+/g, "").trim() || "Xem chi tiết sản phẩm";
-        return `<br><a class="product-link" href="${url}" target="_blank" rel="noopener noreferrer">${cleanLabel}</a>`;
+      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, _label, url) => {
+        return `<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
       });
-
-      // Chuyển link trần https://... thành chữ "Xem chi tiết sản phẩm" xuống dòng riêng
-      text = text.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, (_match, prefix, url) => {
-        return `${prefix}<br><a class="product-link" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm</a>`;
+      text = text.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, (_m, prefix, url) => {
+        return `${prefix}<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
       });
-
-      // Chuyển **chữ** thành <strong>chữ</strong>
       text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-
-      // Làm gọn dấu * đầu dòng thành chấm tròn • và dọn sạch các dấu * thừa
       text = text.replace(/^\s*\*\s+/gm, "• ");
       text = text.replace(/\*+/g, "");
-
-      // Xuống dòng sạch sẽ
       text = text.replace(/\n/g, "<br>");
       return text;
+    }
+
+    function formatBotMessage(rawText) {
+      const cleanedRaw = String(rawText || "").replace(/\r\n/g, "\n").trim();
+      const lines = cleanedRaw.split("\n");
+
+      const cards = [];
+      const introLines = [];
+      const outroLines = [];
+      let currentCard = null;
+      let currentField = null;
+
+      function isProductTitleLine(line) {
+        const trimmed = line.trim();
+        if (!trimmed) return false;
+        if (/^(•|-|\*|\d+\.)\s*/.test(trimmed)) return false;
+        if (/^(đối tượng sử dụng|giá bán|giá bán tham khảo|link sản phẩm|chi tiết|thành phần|thông tin dinh dưỡng|hướng dẫn sử dụng)\s*:/i.test(trimmed.replace(/\*+/g, ""))) {
+          return false;
+        }
+        if (trimmed.endsWith(":")) return false;
+        const boldMatch = trimmed.match(/^\*\*([^*]+)\*\*$/);
+        if (boldMatch) return true;
+        return cards.length > 0 || /sữa|kem|phô mai|váng sữa|yoghurt|susu|dielac|optimum|yoko|green farm|adm|ngôi sao/i.test(trimmed);
+      }
+
+      for (const rawLine of lines) {
+        const line = rawLine.trim();
+        if (!line) continue;
+
+        const plainLine = line.replace(/\*+/g, "").trim();
+
+        // Bỏ dòng tiêu đề "Link sản phẩm:" thừa
+        if (/^[-•*]?\s*link sản phẩm\s*:?\s*$/i.test(plainLine)) {
+          continue;
+        }
+
+        // Bắt các dòng chứa URL
+        const mdLinkMatch = line.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
+        const rawUrlMatch = line.match(/(https?:\/\/[^\s<)]+)/);
+        if ((mdLinkMatch || rawUrlMatch) && !/^[-•*]?\s*(đối tượng|giá bán)/i.test(plainLine)) {
+          const url = mdLinkMatch ? mdLinkMatch[2] : rawUrlMatch[1];
+          if (currentCard) {
+            currentCard.url = url;
+          } else {
+            outroLines.push(`<a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`);
+          }
+          currentField = null;
+          continue;
+        }
+
+        if (isProductTitleLine(line)) {
+          if (currentCard) cards.push(currentCard);
+          const titleClean = line.replace(/^\*\*([^*]+)\*\*$/, "$1").replace(/\*+/g, "").trim();
+          currentCard = {
+            title: titleClean,
+            target: "",
+            price: "",
+            extra: [],
+            url: ""
+          };
+          currentField = null;
+          continue;
+        }
+
+        if (currentCard) {
+          const itemStripped = plainLine.replace(/^(•|-|\*)\s*/, "");
+
+          if (/^đối tượng sử dụng\s*:/i.test(itemStripped)) {
+            currentCard.target = itemStripped.replace(/^đối tượng sử dụng\s*:/i, "").trim();
+            currentField = "target";
+          } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(itemStripped)) {
+            currentCard.price = itemStripped.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
+            currentField = "price";
+          } else if (/^chi tiết\s*:/i.test(itemStripped)) {
+            const possibleUrl = itemStripped.replace(/^chi tiết\s*:/i, "").trim();
+            if (/^https?:\/\//i.test(possibleUrl)) {
+              currentCard.url = possibleUrl;
+            }
+            currentField = null;
+          } else if (/^(•|-|\*)\s+/.test(line)) {
+            const bulletText = line.replace(/^(•|-|\*)\s+/, "");
+            if (currentField === "price") {
+              currentCard.price = currentCard.price
+                ? `${currentCard.price}<br>• ${cleanInlineMarkdown(bulletText)}`
+                : cleanInlineMarkdown(bulletText);
+            } else {
+              currentCard.extra.push(`• ${cleanInlineMarkdown(bulletText)}`);
+            }
+          } else {
+            if (currentField === "target") {
+              currentCard.target = `${currentCard.target} ${itemStripped}`.trim();
+            } else if (currentField === "price") {
+              currentCard.price = `${currentCard.price}<br>${cleanInlineMarkdown(line)}`;
+            } else {
+              currentCard.extra.push(cleanInlineMarkdown(line));
+            }
+          }
+        } else {
+          introLines.push(cleanInlineMarkdown(line));
+        }
+      }
+
+      if (currentCard) cards.push(currentCard);
+
+      if (!cards.length) {
+        return formatPlainBotMessage(cleanedRaw);
+      }
+
+      let html = "";
+      if (introLines.length) {
+        html += `<div class="bot-intro">${introLines.join("<br>")}</div>`;
+      }
+
+      for (const c of cards) {
+        html += `<div class="product-card">`;
+        html += `<div class="product-title">${cleanInlineMarkdown(c.title)}</div>`;
+        if (c.target) {
+          html += `<div class="product-row">• <strong>Đối tượng sử dụng:</strong> ${cleanInlineMarkdown(c.target)}</div>`;
+        }
+        if (c.price) {
+          html += `<div class="product-row">• <strong>Giá bán tham khảo:</strong> ${c.price}</div>`;
+        }
+        for (const ex of c.extra) {
+          html += `<div class="product-row">${ex}</div>`;
+        }
+        if (c.url) {
+          html += `<a class="product-btn" href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
+        }
+        html += `</div>`;
+      }
+
+      if (outroLines.length) {
+        html += `<div style="margin-top:10px;">${outroLines.join("<br>")}</div>`;
+      }
+
+      return html;
     }
 
     function appendMessage(role, text) {
