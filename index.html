@@ -106,7 +106,7 @@
       cursor: pointer;
     }
 
-    /* Chatbot Widget */
+    /* Chatbot Widget phong cách gọn đẹp */
     #chat-toggle {
       position: fixed;
       bottom: 24px;
@@ -126,9 +126,9 @@
       position: fixed;
       bottom: 84px;
       right: 24px;
-      width: 370px;
-      max-width: calc(100vw - 32px);
-      height: 500px;
+      width: 390px;
+      max-width: calc(100vw - 24px);
+      height: 530px;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 14px 36px rgba(0,0,0,0.2);
@@ -154,15 +154,16 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      background: #f8fafc;
+      background: #f4f6fb;
     }
     .msg {
-      max-width: 82%;
-      padding: 10px 14px;
+      max-width: 88%;
+      padding: 11px 14px;
       border-radius: 14px;
-      line-height: 1.45;
-      font-size: 14px;
-      white-space: pre-wrap;
+      line-height: 1.5;
+      font-size: 13.5px;
+      overflow-wrap: anywhere;
+      word-break: break-word;
     }
     .msg.user {
       align-self: flex-end;
@@ -173,8 +174,19 @@
     .msg.bot {
       align-self: flex-start;
       background: #eef2ff;
-      color: #0f172a;
+      color: #1e293b;
       border-bottom-left-radius: 4px;
+    }
+    .msg.bot strong {
+      color: #0213b0;
+      font-weight: 700;
+    }
+    .msg.bot a.product-link {
+      display: inline-block;
+      margin-top: 4px;
+      color: #0213b0;
+      font-weight: 600;
+      text-decoration: underline;
     }
     #chat-form {
       display: flex;
@@ -294,10 +306,48 @@
       chatInput.focus();
     }
 
+    function escapeHtml(str) {
+      return str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function formatBotMessage(rawText) {
+      let text = escapeHtml(rawText || "");
+
+      // Chuyển link Markdown [chữ](url) thành thẻ <a> gọn gàng
+      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_match, label, url) => {
+        const cleanLabel = label.replace(/\*+/g, "").trim() || "Xem chi tiết sản phẩm";
+        return `<br><a class="product-link" href="${url}" target="_blank" rel="noopener noreferrer">${cleanLabel}</a>`;
+      });
+
+      // Chuyển link trần https://... thành chữ "Xem chi tiết sản phẩm" xuống dòng riêng
+      text = text.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, (_match, prefix, url) => {
+        return `${prefix}<br><a class="product-link" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm</a>`;
+      });
+
+      // Chuyển **chữ** thành <strong>chữ</strong>
+      text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+
+      // Làm gọn dấu * đầu dòng thành chấm tròn • và dọn sạch các dấu * thừa
+      text = text.replace(/^\s*\*\s+/gm, "• ");
+      text = text.replace(/\*+/g, "");
+
+      // Xuống dòng sạch sẽ
+      text = text.replace(/\n/g, "<br>");
+      return text;
+    }
+
     function appendMessage(role, text) {
       const div = document.createElement("div");
       div.className = `msg ${role === "user" ? "user" : "bot"}`;
-      div.textContent = text;
+      if (role === "user") {
+        div.textContent = text;
+      } else {
+        div.innerHTML = formatBotMessage(text);
+      }
       chatMessages.appendChild(div);
       chatMessages.scrollTop = chatMessages.scrollHeight;
     }
@@ -336,7 +386,7 @@
         history.push({ role: "model", text: data.reply });
       } catch (err) {
         loadingDiv.remove();
-        appendMessage("bot", "Không kết nối được tới server Python.");
+        appendMessage("bot", "Không kết nối được tới server.");
       } finally {
         chatInput.disabled = false;
         chatInput.focus();
