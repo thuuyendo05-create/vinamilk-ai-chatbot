@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vinamilk - Vươn Cao Việt Nam | Trợ lý AI Tư vấn</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Arial, sans-serif; }
+    body { background: #fbf9f5; color: #0213b0; }
+
+    /* Top bar & Navbar */
+    .topbar {
+      background: #0213b0;
+      color: #fff;
+      font-size: 13px;
+      padding: 8px 5%;
+      display: flex;
+      justify-content: space-between;
+    }
+    header {
+      background: #fff;
+      padding: 16px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #e6e8f0;
+      position: sticky;
+      top: 0;
+      z-index: 900;
+    }
+    .logo {
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 1.5px;
+      color: #0213b0;
+    }
+    nav a {
+      text-decoration: none;
+      color: #0213b0;
+      font-weight: 600;
+      margin-left: 24px;
+      font-size: 15px;
+    }
+    nav a:hover { text-decoration: underline; }
+
+    /* Banner chính */
+    .banner {
+      background: linear-gradient(135deg, #0213b0 0%, #1d35d8 100%);
+      color: #fff;
+      padding: 64px 5%;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 32px;
+    }
+    .banner-text { max-width: 600px; }
+    .banner-tag {
+      display: inline-block;
+      background: rgba(255,255,255,0.16);
+      padding: 6px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      margin-bottom: 16px;
+    }
+    .banner h1 { font-size: 40px; line-height: 1.2; margin-bottom: 16px; }
+    .banner p { font-size: 16px; line-height: 1.6; opacity: 0.92; margin-bottom: 24px; }
+    .btn-primary {
+      background: #fff;
+      color: #0213b0;
+      border: none;
+      padding: 13px 24px;
+      border-radius: 999px;
+      font-weight: 700;
+      font-size: 15px;
+      cursor: pointer;
+    }
+
+    /* Danh mục sản phẩm */
+    .section { padding: 52px 5%; max-width: 1200px; margin: auto; }
+    .section h2 { font-size: 28px; margin-bottom: 8px; }
+    .section .sub { color: #475569; margin-bottom: 28px; font-size: 15px; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px;
+    }
+    .card {
+      background: #fff;
+      border: 1px solid #e2e8f0;
+      border-radius: 16px;
+      padding: 24px;
+      transition: transform 0.2s;
+    }
+    .card:hover { transform: translateY(-4px); box-shadow: 0 10px 24px rgba(2,19,176,0.08); }
+    .card h3 { font-size: 18px; margin-bottom: 8px; color: #0213b0; }
+    .card p { font-size: 14px; color: #334155; line-height: 1.5; margin-bottom: 14px; }
+    .ask-btn {
+      background: #eef2ff;
+      color: #0213b0;
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    /* Chatbot Widget */
+    #chat-toggle {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0213b0;
+      color: #fff;
+      border: none;
+      border-radius: 999px;
+      padding: 14px 22px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 8px 24px rgba(2,19,176,0.35);
+      z-index: 1000;
+    }
+    #chat-box {
+      position: fixed;
+      bottom: 84px;
+      right: 24px;
+      width: 370px;
+      max-width: calc(100vw - 32px);
+      height: 500px;
+      background: #fff;
+      border-radius: 18px;
+      box-shadow: 0 14px 36px rgba(0,0,0,0.2);
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+      z-index: 1000;
+      border: 1px solid #dbe2f0;
+    }
+    #chat-header {
+      background: #0213b0;
+      color: #fff;
+      padding: 15px 18px;
+      font-weight: 700;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    #chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      background: #f8fafc;
+    }
+    .msg {
+      max-width: 82%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      line-height: 1.45;
+      font-size: 14px;
+      white-space: pre-wrap;
+    }
+    .msg.user {
+      align-self: flex-end;
+      background: #0213b0;
+      color: #fff;
+      border-bottom-right-radius: 4px;
+    }
+    .msg.bot {
+      align-self: flex-start;
+      background: #eef2ff;
+      color: #0f172a;
+      border-bottom-left-radius: 4px;
+    }
+    #chat-form {
+      display: flex;
+      border-top: 1px solid #e2e8f0;
+      padding: 10px;
+      gap: 8px;
+      background: #fff;
+    }
+    #chat-input {
+      flex: 1;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      font-size: 14px;
+      outline: none;
+    }
+    #chat-send {
+      background: #0213b0;
+      color: #fff;
+      border: none;
+      padding: 0 16px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="topbar">
+    <span>Từ 1976 • Chăm sóc sức khỏe cộng đồng Việt</span>
+    <span>Hotline CSKH: 1900 636 979</span>
+  </div>
+
+  <header>
+    <div class="logo">VINAMILK</div>
+    <nav>
+      <a href="#san-pham">Sản phẩm</a>
+      <a href="#dinh-duong">Dinh dưỡng</a>
+      <a href="#hop-tac">Hợp tác kinh doanh</a>
+    </nav>
+  </header>
+
+  <section class="banner">
+    <div class="banner-text">
+      <div class="banner-tag">Trợ lý AI Tư vấn Khách hàng 24/7</div>
+      <h1>Chăm sóc dinh dưỡng trọn vẹn cho mọi gia đình Việt</h1>
+      <p>Khám phá danh mục sữa tươi, sữa chua, sữa hạt và giải pháp dinh dưỡng chuyên biệt cùng trợ lý AI của Vinamilk.</p>
+      <button class="btn-primary" type="button" onclick="openChatWithPrompt('Tư vấn cho mình các dòng sữa nổi bật của Vinamilk')">Tư vấn cùng AI ngay</button>
+    </div>
+  </section>
+
+  <section class="section" id="san-pham">
+    <h2>Danh mục sản phẩm tiêu biểu</h2>
+    <p class="sub">Bấm vào từng nhóm sản phẩm để hỏi nhanh trợ lý AI về thành phần, đối tượng sử dụng và cách bảo quản.</p>
+    <div class="grid">
+      <div class="card">
+        <h3>Sữa Tươi 100% & Green Farm</h3>
+        <p>Nguồn sữa tươi sạch từ hệ thống trang trại sinh thái đạt chuẩn quốc tế, giữ trọn vị thanh khiết tự nhiên.</p>
+        <button class="ask-btn" type="button" onclick="openChatWithPrompt('Tư vấn về sữa tươi Vinamilk 100% và Green Farm')">Hỏi AI về dòng này</button>
+      </div>
+      <div class="card">
+        <h3>Sữa Chua Ăn & Sữa Chua Uống</h3>
+        <p>Lên men tự nhiên hỗ trợ tiêu hóa khỏe mạnh và tăng cường đề kháng mỗi ngày cho cả gia đình.</p>
+        <button class="ask-btn" type="button" onclick="openChatWithPrompt('Các loại sữa chua Vinamilk có công dụng gì?')">Hỏi AI về dòng này</button>
+      </div>
+      <div class="card">
+        <h3>Sữa Hạt & Thức Uống Dinh Dưỡng</h3>
+        <p>Kết hợp hạt óc chó, hạnh nhân, đậu nành không biến đổi gen – lựa chọn thanh nhẹ giàu dưỡng chất.</p>
+        <button class="ask-btn" type="button" onclick="openChatWithPrompt('Giới thiệu các loại sữa hạt của Vinamilk')">Hỏi AI về dòng này</button>
+      </div>
+      <div class="card">
+        <h3>Dinh Dưỡng Trẻ Em & Người Cao Tuổi</h3>
+        <p>Các dòng sữa bột chuyên biệt hỗ trợ phát triển chiều cao, trí não cho bé và xương khớp cho người lớn tuổi.</p>
+        <button class="ask-btn" type="button" onclick="openChatWithPrompt('Tư vấn sữa bột Vinamilk cho trẻ em và người cao tuổi')">Hỏi AI về dòng này</button>
+      </div>
+    </div>
+  </section>
+
+  <button id="chat-toggle" type="button">Chat với AI Vinamilk</button>
+
+  <div id="chat-box">
+    <div id="chat-header">
+      <span>Trợ lý AI Vinamilk</span>
+      <button id="chat-close" type="button" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">×</button>
+    </div>
+    <div id="chat-messages">
+      <div class="msg bot">Xin chào! Mình là trợ lý AI của Vinamilk. Bạn cần tư vấn sản phẩm sữa, dinh dưỡng hay thông tin hợp tác kinh doanh nào ạ?</div>
+    </div>
+    <form id="chat-form">
+      <input id="chat-input" type="text" placeholder="Nhập câu hỏi của bạn..." autocomplete="off" />
+      <button id="chat-send" type="submit">Gửi</button>
+    </form>
+  </div>
+
+  <script>
+    const API_URL = "/chat";
+    const toggleBtn = document.getElementById("chat-toggle");
+    const closeBtn = document.getElementById("chat-close");
+    const chatBox = document.getElementById("chat-box");
+    const chatForm = document.getElementById("chat-form");
+    const chatInput = document.getElementById("chat-input");
+    const chatMessages = document.getElementById("chat-messages");
+    const history = [];
+
+    toggleBtn.addEventListener("click", () => {
+      chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
+      if (chatBox.style.display === "flex") chatInput.focus();
+    });
+
+    closeBtn.addEventListener("click", () => {
+      chatBox.style.display = "none";
+    });
+
+    function openChatWithPrompt(text) {
+      chatBox.style.display = "flex";
+      chatInput.value = text;
+      chatInput.focus();
+    }
+
+    function appendMessage(role, text) {
+      const div = document.createElement("div");
+      div.className = `msg ${role === "user" ? "user" : "bot"}`;
+      div.textContent = text;
+      chatMessages.appendChild(div);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    chatForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const text = chatInput.value.trim();
+      if (!text) return;
+
+      appendMessage("user", text);
+      chatInput.value = "";
+      chatInput.disabled = true;
+
+      const loadingDiv = document.createElement("div");
+      loadingDiv.className = "msg bot";
+      loadingDiv.textContent = "Đang suy nghĩ...";
+      chatMessages.appendChild(loadingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+
+      try {
+        const res = await fetch(API_URL, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: text, history })
+        });
+        const data = await res.json();
+        loadingDiv.remove();
+
+        if (!res.ok) {
+          appendMessage("bot", data.detail || "Có lỗi xảy ra khi gọi server.");
+          return;
+        }
+
+        appendMessage("bot", data.reply);
+        history.push({ role: "user", text });
+        history.push({ role: "model", text: data.reply });
+      } catch (err) {
+        loadingDiv.remove();
+        appendMessage("bot", "Không kết nối được tới server Python.");
+      } finally {
+        chatInput.disabled = false;
+        chatInput.focus();
+      }
+    });
+  </script>
+</body>
+</html>
