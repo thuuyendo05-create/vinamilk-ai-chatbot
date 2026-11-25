@@ -19,7 +19,7 @@
     }
     header {
       background: #fff;
-      padding: 14px 5%;
+      padding: 16px 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -28,86 +28,43 @@
       top: 0;
       z-index: 900;
     }
-    .brand-left {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .vnm-badge {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: #0213b0;
-      color: #fff;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 17px;
-      letter-spacing: 0.5px;
-      border: 2px solid #96d1ef;
-    }
     .logo {
-      font-size: 25px;
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: 1.5px;
       color: #0213b0;
-    }
-    nav {
-      display: flex;
-      align-items: center;
-      gap: 24px;
     }
     nav a {
       text-decoration: none;
       color: #0213b0;
       font-weight: 600;
+      margin-left: 24px;
       font-size: 15px;
     }
     nav a:hover { text-decoration: underline; }
 
-    /* Banner chính có ảnh sản phẩm + lớp phủ bảo vệ chữ */
+    /* Banner chính */
     .banner {
-      position: relative;
-      background:
-        linear-gradient(90deg, rgba(2, 19, 176, 0.94) 0%, rgba(2, 19, 176, 0.82) 48%, rgba(29, 53, 216, 0.32) 100%),
-        url("https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1600&q=80") center / cover no-repeat;
+      background: linear-gradient(135deg, #0213b0 0%, #1d35d8 100%);
       color: #fff;
-      padding: 68px 5%;
+      padding: 64px 5%;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 32px;
-      min-height: 390px;
     }
-    .banner-text {
-      position: relative;
-      z-index: 2;
-      max-width: 600px;
-    }
+    .banner-text { max-width: 600px; }
     .banner-tag {
       display: inline-block;
-      background: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.16);
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
       margin-bottom: 16px;
     }
-    .banner h1 {
-      font-size: 40px;
-      line-height: 1.2;
-      margin-bottom: 16px;
-      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
-    }
-    .banner p {
-      font-size: 16px;
-      line-height: 1.6;
-      opacity: 0.96;
-      margin-bottom: 24px;
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
-    }
+    .banner h1 { font-size: 40px; line-height: 1.2; margin-bottom: 16px; }
+    .banner p { font-size: 16px; line-height: 1.6; opacity: 0.92; margin-bottom: 24px; }
     .btn-primary {
       background: #fff;
       color: #0213b0;
@@ -206,8 +163,8 @@
       background: #f4f6fb;
     }
     .msg {
-      max-width: 93%;
-      padding: 14px 16px;
+      max-width: 92%;
+      padding: 13px 16px;
       border-radius: 16px;
       line-height: 1.6;
       font-size: 15px;
@@ -250,47 +207,23 @@
     }
     .product-row {
       font-size: 14.5px;
-      line-height: 1.58;
-      color: #1e293b;
-      margin-bottom: 7px;
-    }
-    .product-row strong,
-    .detail-label {
-      color: #0213b0;
-      font-weight: 700;
-    }
-    .clean-line {
-      margin-top: 3px;
-      font-size: 14.5px;
       line-height: 1.55;
       color: #1e293b;
+      margin-bottom: 6px;
     }
-    .deeplink-box {
-      margin-top: 10px;
-      padding-top: 9px;
-      border-top: 1px dashed #dbe2f0;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 8px;
-    }
-    .deeplink-tag {
-      font-family: Consolas, monospace;
-      font-size: 12.5px;
-      color: #1d35d8;
-      background: #f1f5ff;
-      padding: 4px 8px;
-      border-radius: 6px;
+    .product-row strong {
+      color: #0213b0;
+      font-weight: 600;
     }
     .product-btn {
       display: inline-block;
-      padding: 7px 14px;
+      margin-top: 8px;
+      padding: 8px 14px;
       border: 1.5px solid #0213b0;
       border-radius: 999px;
       color: #0213b0;
       background: #ffffff;
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 700;
       text-decoration: none;
       transition: background 0.15s, color 0.15s;
@@ -302,6 +235,13 @@
     .msg.bot strong {
       color: #0213b0;
       font-weight: 700;
+    }
+    .msg.bot a.product-link {
+      display: inline-block;
+      margin-top: 6px;
+      color: #0213b0;
+      font-weight: 700;
+      text-decoration: underline;
     }
     #chat-form {
       display: flex;
@@ -337,14 +277,11 @@
   </div>
 
   <header>
-    <a class="brand-left" href="#san-pham">
-      <span class="vnm-badge" aria-hidden="true">V</span>
-      <span class="logo">VINAMILK</span>
-    </a>
+    <div class="logo">VINAMILK</div>
     <nav>
       <a href="#san-pham">Sản phẩm</a>
-      <a href="#ve-vinamilk">Về Vinamilk</a>
-      <a href="#cau-hoi-thuong-gap">Câu hỏi thường gặp</a>
+      <a href="#dinh-duong">Dinh dưỡng</a>
+      <a href="#hop-tac">Hợp tác kinh doanh</a>
     </nav>
   </header>
 
@@ -382,16 +319,6 @@
         <button class="ask-btn" type="button" onclick="openChatWithPrompt('Tư vấn sữa bột Vinamilk cho trẻ em và người cao tuổi')">Hỏi AI về dòng này</button>
       </div>
     </div>
-  </section>
-
-  <section class="section" id="ve-vinamilk" style="padding-top: 12px;">
-    <h2>Về Vinamilk</h2>
-    <p class="sub">Thành lập từ năm 1976, Vinamilk tiên phong phát triển hệ thống trang trại chuẩn quốc tế và các giải pháp dinh dưỡng chất lượng cao phục vụ cộng đồng.</p>
-  </section>
-
-  <section class="section" id="cau-hoi-thuong-gap" style="padding-top: 12px;">
-    <h2>Câu hỏi thường gặp</h2>
-    <p class="sub">Bạn có thể hỏi trực tiếp trong khung chat về giá bán theo quy cách (lốc/thùng), đối tượng sử dụng, thành phần và hướng dẫn sử dụng.</p>
   </section>
 
   <button id="chat-toggle" type="button">Chat với AI Vinamilk</button>
@@ -446,12 +373,6 @@
         .replace(/"/g, "&quot;");
     }
 
-    function stripLeadingSymbols(str) {
-      return String(str || "")
-        .replace(/^\s*(?:•|-|\*|·|\+|–|—|\d+[.)])\s*/g, "")
-        .trim();
-    }
-
     function cleanInlineMarkdown(str) {
       return escapeHtml(str || "")
         .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
@@ -459,60 +380,16 @@
         .trim();
     }
 
-    function toSlug(name) {
-      return String(name || "san-pham")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .replace(/đ/g, "d")
-        .replace(/Đ/g, "D")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "")
-        .slice(0, 48) || "san-pham";
-    }
-
-    function buildDeeplink(title) {
-      return `vinamilk://san-pham/${toSlug(title)}`;
-    }
-
-    function splitPriceLines(rawPrice) {
-      const cleaned = stripLeadingSymbols(rawPrice);
-      if (!cleaned) return [];
-      const parts = cleaned
-        .split(/\s*(?:\/|\|)\s*|\n+/)
-        .map((s) => stripLeadingSymbols(s))
-        .filter(Boolean);
-      return parts.map((part) => {
-        const colonIdx = part.indexOf(":");
-        if (colonIdx > 0 && colonIdx < 34) {
-          const label = cleanInlineMarkdown(part.slice(0, colonIdx));
-          const val = cleanInlineMarkdown(part.slice(colonIdx + 1));
-          return `<div class="clean-line"><strong>${label}:</strong> ${val}</div>`;
-        }
-        return `<div class="clean-line">${cleanInlineMarkdown(part)}</div>`;
-      });
-    }
-
-    function splitUsageLines(rawUsage) {
-      const cleaned = stripLeadingSymbols(rawUsage);
-      if (!cleaned) return [];
-      const sentences = cleaned
-        .split(/(?<=[.!?])\s+|\n+/)
-        .map((s) => stripLeadingSymbols(s))
-        .filter(Boolean);
-      return sentences.map((s) => `<div class="clean-line">${cleanInlineMarkdown(s)}</div>`);
-    }
-
     function formatPlainBotMessage(rawText) {
       let text = escapeHtml(rawText || "");
       text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, _label, url) => {
-        return `<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a>`;
+        return `<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
       });
       text = text.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, (_m, prefix, url) => {
-        return `${prefix}<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a>`;
+        return `${prefix}<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
       });
       text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-      text = text.replace(/^\s*(?:•|-|\*|·)\s*/gm, "");
+      text = text.replace(/^\s*\*\s+/gm, "• ");
       text = text.replace(/\*+/g, "");
       text = text.replace(/\n/g, "<br>");
       return text;
@@ -531,12 +408,13 @@
       function isProductTitleLine(line) {
         const trimmed = line.trim();
         if (!trimmed) return false;
-        const noStar = trimmed.replace(/\*+/g, "");
-        if (/^(nhóm|đối tượng|đối tượng sử dụng|giá bán|giá bán tham khảo|link sản phẩm|chi tiết|thành phần|thành phần chính|thông tin dinh dưỡng|hướng dẫn sử dụng|dạng túi|dạng chai|dạng hộp|dạng lốc|dạng thùng)\s*:/i.test(stripLeadingSymbols(noStar))) {
+        if (/^(•|-|\*|\d+\.)\s*/.test(trimmed)) return false;
+        if (/^(đối tượng sử dụng|giá bán|giá bán tham khảo|link sản phẩm|chi tiết|thành phần|thông tin dinh dưỡng|hướng dẫn sử dụng)\s*:/i.test(trimmed.replace(/\*+/g, ""))) {
           return false;
         }
         if (trimmed.endsWith(":")) return false;
-        if (/^\*\*([^*]+)\*\*$/.test(trimmed)) return true;
+        const boldMatch = trimmed.match(/^\*\*([^*]+)\*\*$/);
+        if (boldMatch) return true;
         return cards.length > 0 || /sữa|kem|phô mai|váng sữa|yoghurt|susu|dielac|optimum|yoko|green farm|adm|ngôi sao/i.test(trimmed);
       }
 
@@ -545,22 +423,21 @@
         if (!line) continue;
 
         const plainLine = line.replace(/\*+/g, "").trim();
-        const strippedLine = stripLeadingSymbols(plainLine);
 
-        if (!strippedLine) continue;
-
-        if (/^link sản phẩm\s*:?\s*$/i.test(strippedLine)) {
+        // Bỏ dòng tiêu đề "Link sản phẩm:" thừa
+        if (/^[-•*]?\s*link sản phẩm\s*:?\s*$/i.test(plainLine)) {
           continue;
         }
 
+        // Bắt các dòng chứa URL
         const mdLinkMatch = line.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
         const rawUrlMatch = line.match(/(https?:\/\/[^\s<)]+)/);
-        if ((mdLinkMatch || rawUrlMatch) && !/^(đối tượng|giá bán)/i.test(strippedLine)) {
+        if ((mdLinkMatch || rawUrlMatch) && !/^[-•*]?\s*(đối tượng|giá bán)/i.test(plainLine)) {
           const url = mdLinkMatch ? mdLinkMatch[2] : rawUrlMatch[1];
           if (currentCard) {
-            currentCard.webUrl = url;
+            currentCard.url = url;
           } else {
-            outroLines.push(`<a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a>`);
+            outroLines.push(`<a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`);
           }
           currentField = null;
           continue;
@@ -568,70 +445,53 @@
 
         if (isProductTitleLine(line)) {
           if (currentCard) cards.push(currentCard);
-          const titleClean = stripLeadingSymbols(line.replace(/^\*\*([^*]+)\*\*$/, "$1").replace(/\*+/g, ""));
+          const titleClean = line.replace(/^\*\*([^*]+)\*\*$/, "$1").replace(/\*+/g, "").trim();
           currentCard = {
             title: titleClean,
-            group: "",
             target: "",
             price: "",
-            ingredient: "",
-            nutrition: "",
-            usage: "",
             extra: [],
-            deeplink: buildDeeplink(titleClean),
-            webUrl: ""
+            url: ""
           };
           currentField = null;
           continue;
         }
 
         if (currentCard) {
-          if (/^nhóm\s*:/i.test(strippedLine)) {
-            currentCard.group = strippedLine.replace(/^nhóm\s*:/i, "").trim();
-            currentField = "group";
-          } else if (/^đối tượng(\s*sử dụng)?\s*:/i.test(strippedLine)) {
-            currentCard.target = strippedLine.replace(/^đối tượng(\s*sử dụng)?\s*:/i, "").trim();
+          const itemStripped = plainLine.replace(/^(•|-|\*)\s*/, "");
+
+          if (/^đối tượng sử dụng\s*:/i.test(itemStripped)) {
+            currentCard.target = itemStripped.replace(/^đối tượng sử dụng\s*:/i, "").trim();
             currentField = "target";
-          } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(strippedLine)) {
-            currentCard.price = strippedLine.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
+          } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(itemStripped)) {
+            currentCard.price = itemStripped.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
             currentField = "price";
-          } else if (/^thành phần(\s*chính)?\s*:/i.test(strippedLine)) {
-            currentCard.ingredient = strippedLine.replace(/^thành phần(\s*chính)?\s*:/i, "").trim();
-            currentField = "ingredient";
-          } else if (/^thông tin dinh dưỡng[^:]*:/i.test(strippedLine)) {
-            const labelMatch = strippedLine.match(/^([^:]+:)/);
-            const labelText = labelMatch ? labelMatch[1].trim() : "Thông tin dinh dưỡng:";
-            const bodyText = strippedLine.replace(/^[^:]+:\s*/, "").trim();
-            currentCard.nutrition = bodyText ? `<strong>${cleanInlineMarkdown(labelText)}</strong> ${cleanInlineMarkdown(bodyText)}` : `<strong>${cleanInlineMarkdown(labelText)}</strong>`;
-            currentField = "nutrition";
-          } else if (/^hướng dẫn sử dụng\s*:/i.test(strippedLine)) {
-            currentCard.usage = strippedLine.replace(/^hướng dẫn sử dụng\s*:/i, "").trim();
-            currentField = "usage";
-          } else if (/^chi tiết\s*:/i.test(strippedLine)) {
-            const possibleUrl = strippedLine.replace(/^chi tiết\s*:/i, "").trim();
+          } else if (/^chi tiết\s*:/i.test(itemStripped)) {
+            const possibleUrl = itemStripped.replace(/^chi tiết\s*:/i, "").trim();
             if (/^https?:\/\//i.test(possibleUrl)) {
-              currentCard.webUrl = possibleUrl;
+              currentCard.url = possibleUrl;
             }
             currentField = null;
-          } else {
-            if (currentField === "group") {
-              currentCard.group = `${currentCard.group} ${strippedLine}`.trim();
-            } else if (currentField === "target") {
-              currentCard.target = `${currentCard.target} ${strippedLine}`.trim();
-            } else if (currentField === "price") {
-              currentCard.price = currentCard.price ? `${currentCard.price} / ${strippedLine}` : strippedLine;
-            } else if (currentField === "ingredient") {
-              currentCard.ingredient = `${currentCard.ingredient} ${strippedLine}`.trim();
-            } else if (currentField === "nutrition") {
-              currentCard.nutrition = `${currentCard.nutrition} ${cleanInlineMarkdown(strippedLine)}`.trim();
-            } else if (currentField === "usage") {
-              currentCard.usage = `${currentCard.usage} ${strippedLine}`.trim();
+          } else if (/^(•|-|\*)\s+/.test(line)) {
+            const bulletText = line.replace(/^(•|-|\*)\s+/, "");
+            if (currentField === "price") {
+              currentCard.price = currentCard.price
+                ? `${currentCard.price}<br>• ${cleanInlineMarkdown(bulletText)}`
+                : cleanInlineMarkdown(bulletText);
             } else {
-              currentCard.extra.push(cleanInlineMarkdown(strippedLine));
+              currentCard.extra.push(`• ${cleanInlineMarkdown(bulletText)}`);
+            }
+          } else {
+            if (currentField === "target") {
+              currentCard.target = `${currentCard.target} ${itemStripped}`.trim();
+            } else if (currentField === "price") {
+              currentCard.price = `${currentCard.price}<br>${cleanInlineMarkdown(line)}`;
+            } else {
+              currentCard.extra.push(cleanInlineMarkdown(line));
             }
           }
         } else {
-          introLines.push(cleanInlineMarkdown(strippedLine));
+          introLines.push(cleanInlineMarkdown(line));
         }
       }
 
@@ -649,33 +509,18 @@
       for (const c of cards) {
         html += `<div class="product-card">`;
         html += `<div class="product-title">${cleanInlineMarkdown(c.title)}</div>`;
-        if (c.group) {
-          html += `<div class="product-row"><strong>Nhóm:</strong> ${cleanInlineMarkdown(c.group)}</div>`;
-        }
         if (c.target) {
-          html += `<div class="product-row"><strong>Đối tượng sử dụng:</strong> ${cleanInlineMarkdown(c.target)}</div>`;
+          html += `<div class="product-row">• <strong>Đối tượng sử dụng:</strong> ${cleanInlineMarkdown(c.target)}</div>`;
         }
         if (c.price) {
-          html += `<div class="product-row"><strong>Giá bán tham khảo:</strong>${splitPriceLines(c.price).join("")}</div>`;
-        }
-        if (c.ingredient) {
-          html += `<div class="product-row"><strong>Thành phần chính:</strong> ${cleanInlineMarkdown(c.ingredient)}</div>`;
-        }
-        if (c.nutrition) {
-          html += `<div class="product-row">${c.nutrition}</div>`;
-        }
-        if (c.usage) {
-          html += `<div class="product-row"><strong>Hướng dẫn sử dụng:</strong>${splitUsageLines(c.usage).join("")}</div>`;
+          html += `<div class="product-row">• <strong>Giá bán tham khảo:</strong> ${c.price}</div>`;
         }
         for (const ex of c.extra) {
           html += `<div class="product-row">${ex}</div>`;
         }
-        const hrefTarget = c.webUrl || c.deeplink;
-        const targetAttr = c.webUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
-        html += `<div class="deeplink-box">`;
-        html += `<span class="deeplink-tag">${escapeHtml(c.deeplink)}</span>`;
-        html += `<a class="product-btn" href="${escapeHtml(hrefTarget)}"${targetAttr}>Mở sản phẩm →</a>`;
-        html += `</div>`;
+        if (c.url) {
+          html += `<a class="product-btn" href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
+        }
         html += `</div>`;
       }
 
