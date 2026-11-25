@@ -19,7 +19,7 @@
     }
     header {
       background: #fff;
-      padding: 14px 5%;
+      padding: 16px 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -28,26 +28,8 @@
       top: 0;
       z-index: 900;
     }
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      text-decoration: none;
-    }
-    .brand-badge {
-      width: 38px;
-      height: 38px;
-      border-radius: 10px;
-      background: #0213b0;
-      color: #fff;
-      font-size: 20px;
-      font-weight: 900;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-    }
     .logo {
-      font-size: 26px;
+      font-size: 28px;
       font-weight: 900;
       letter-spacing: 1.5px;
       color: #0213b0;
@@ -56,39 +38,33 @@
       text-decoration: none;
       color: #0213b0;
       font-weight: 600;
-      margin-left: 26px;
+      margin-left: 24px;
       font-size: 15px;
     }
     nav a:hover { text-decoration: underline; }
 
-    /* Banner hình ảnh sản phẩm hài hòa, chữ luôn rõ nét */
+    /* Banner chính */
     .banner {
-      position: relative;
-      background:
-        linear-gradient(90deg, #0213b0 0%, #0213b0 48%, rgba(2, 19, 176, 0.72) 72%, rgba(2, 19, 176, 0.35) 100%),
-        url("https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1600&q=80") right center / cover no-repeat;
+      background: linear-gradient(135deg, #0213b0 0%, #1d35d8 100%);
       color: #fff;
-      padding: 68px 5%;
-      min-height: 390px;
+      padding: 64px 5%;
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
+      justify-content: space-between;
+      gap: 32px;
     }
-    .banner-text {
-      position: relative;
-      z-index: 2;
-      max-width: 620px;
-      text-shadow: 0 2px 12px rgba(2, 12, 95, 0.45);
-    }
+    .banner-text { max-width: 600px; }
     .banner-tag {
       display: inline-block;
-      background: rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.16);
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
       margin-bottom: 16px;
     }
     .banner h1 { font-size: 40px; line-height: 1.2; margin-bottom: 16px; }
-    .banner p { font-size: 16px; line-height: 1.6; opacity: 0.96; margin-bottom: 24px; }
+    .banner p { font-size: 16px; line-height: 1.6; opacity: 0.92; margin-bottom: 24px; }
     .btn-primary {
       background: #fff;
       color: #0213b0;
@@ -130,7 +106,7 @@
       cursor: pointer;
     }
 
-    /* Chatbot Widget */
+    /* Chatbot Widget phong cách gọn đẹp */
     #chat-toggle {
       position: fixed;
       bottom: 24px;
@@ -150,9 +126,9 @@
       position: fixed;
       bottom: 84px;
       right: 24px;
-      width: 430px;
+      width: 390px;
       max-width: calc(100vw - 24px);
-      height: 570px;
+      height: 530px;
       background: #fff;
       border-radius: 18px;
       box-shadow: 0 14px 36px rgba(0,0,0,0.2);
@@ -171,27 +147,21 @@
       justify-content: space-between;
       align-items: center;
     }
-    .chat-header-sub {
-      font-size: 12.5px;
-      font-weight: 400;
-      opacity: 0.9;
-      margin-top: 2px;
-    }
     #chat-messages {
       flex: 1;
-      padding: 16px;
+      padding: 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
       background: #f4f6fb;
     }
     .msg {
-      max-width: 93%;
-      padding: 14px 16px;
-      border-radius: 16px;
-      line-height: 1.65;
-      font-size: 15.5px;
+      max-width: 88%;
+      padding: 11px 14px;
+      border-radius: 14px;
+      line-height: 1.5;
+      font-size: 13.5px;
       overflow-wrap: anywhere;
       word-break: break-word;
     }
@@ -200,7 +170,6 @@
       background: #0213b0;
       color: #fff;
       border-bottom-right-radius: 4px;
-      font-weight: 500;
     }
     .msg.bot {
       align-self: flex-start;
@@ -208,46 +177,16 @@
       color: #1e293b;
       border-bottom-left-radius: 4px;
     }
-    .product-card {
-      background: #ffffff;
-      border: 1px solid #c7d4f5;
-      border-radius: 14px;
-      padding: 14px 16px;
-      margin-top: 12px;
-    }
-    .product-card:first-child { margin-top: 0; }
-    .product-title {
-      font-size: 16.5px;
-      font-weight: 700;
-      color: #0213b0;
-      line-height: 1.45;
-      margin-bottom: 8px;
-    }
-    .product-section {
-      margin-top: 8px;
-      font-size: 15px;
-      line-height: 1.6;
-      color: #1e293b;
-    }
-    .product-label {
+    .msg.bot strong {
       color: #0213b0;
       font-weight: 700;
     }
-    .product-subline {
+    .msg.bot a.product-link {
+      display: inline-block;
       margin-top: 4px;
-      padding-left: 10px;
-      border-left: 2px solid #93b0f5;
-      font-size: 14.5px;
-      line-height: 1.55;
-    }
-    a.blue-link {
       color: #0213b0;
-      font-weight: 700;
+      font-weight: 600;
       text-decoration: underline;
-      text-underline-offset: 2px;
-    }
-    a.blue-link:hover {
-      color: #1d35d8;
     }
     #chat-form {
       display: flex;
@@ -258,19 +197,18 @@
     }
     #chat-input {
       flex: 1;
-      padding: 11px 13px;
+      padding: 10px 12px;
       border: 1px solid #cbd5e1;
       border-radius: 10px;
-      font-size: 15px;
+      font-size: 14px;
       outline: none;
     }
     #chat-send {
       background: #0213b0;
       color: #fff;
       border: none;
-      padding: 0 18px;
+      padding: 0 16px;
       border-radius: 10px;
-      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
     }
@@ -283,14 +221,11 @@
   </div>
 
   <header>
-    <a class="brand" href="#">
-      <span class="brand-badge">V</span>
-      <span class="logo">VINAMILK</span>
-    </a>
+    <div class="logo">VINAMILK</div>
     <nav>
       <a href="#san-pham">Sản phẩm</a>
-      <a href="#ve-vinamilk">Về Vinamilk</a>
-      <a href="#cau-hoi">Câu hỏi</a>
+      <a href="#dinh-duong">Dinh dưỡng</a>
+      <a href="#hop-tac">Hợp tác kinh doanh</a>
     </nav>
   </header>
 
@@ -330,28 +265,15 @@
     </div>
   </section>
 
-  <section class="section" id="ve-vinamilk">
-    <h2>Về Vinamilk</h2>
-    <p class="sub">Đồng hành cùng sức khỏe và tầm vóc Việt Nam từ năm 1976 với hệ thống trang trại chuẩn quốc tế và danh mục dinh dưỡng đa dạng.</p>
-  </section>
-
-  <section class="section" id="cau-hoi">
-    <h2>Câu hỏi thường gặp</h2>
-    <p class="sub">Bạn có thể bấm nút chat ở góc dưới để hỏi trực tiếp về giá bán, đối tượng sử dụng hoặc cách dùng từng sản phẩm.</p>
-  </section>
-
   <button id="chat-toggle" type="button">Chat với AI Vinamilk</button>
 
   <div id="chat-box">
     <div id="chat-header">
-      <div>
-        <div>Trợ lý AI Vinamilk</div>
-        <div class="chat-header-sub">● Trực tuyến</div>
-      </div>
-      <button id="chat-close" type="button" style="background:none;border:none;color:#fff;font-size:22px;cursor:pointer;">×</button>
+      <span>Trợ lý AI Vinamilk</span>
+      <button id="chat-close" type="button" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">×</button>
     </div>
     <div id="chat-messages">
-      <div class="msg bot">Xin chào! Mình là trợ lý AI của Vinamilk. Bạn cần tư vấn sản phẩm sữa, giá bán hay cách sử dụng nào ạ?</div>
+      <div class="msg bot">Xin chào! Mình là trợ lý AI của Vinamilk. Bạn cần tư vấn sản phẩm sữa, dinh dưỡng hay thông tin hợp tác kinh doanh nào ạ?</div>
     </div>
     <form id="chat-form">
       <input id="chat-input" type="text" placeholder="Nhập câu hỏi của bạn..." autocomplete="off" />
@@ -385,157 +307,37 @@
     }
 
     function escapeHtml(str) {
-      return String(str || "")
+      return str
         .replace(/&/g, "&amp;")
         .replace(/</g, "&lt;")
         .replace(/>/g, "&gt;")
         .replace(/"/g, "&quot;");
     }
 
-    // Chuyển [chữ](link) thành chữ xanh bấm được; nếu ai hỏi "socola" mà có link đi kèm thì gắn link thẳng vào chữ socola/tên sp
-    function renderRichInline(rawStr) {
-      let str = String(rawStr || "").replace(/\*+/g, "");
-      const tokens = [];
-
-      // Thay markdown link [text](url) bằng placeholder trước khi escape HTML
-      str = str.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, label, url) => {
-        const cleanLabel = label.trim() || "Xem sản phẩm";
-        const idx = tokens.length;
-        tokens.push(`<a class="blue-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(cleanLabel)}</a>`);
-        return `@@LINK_${idx}@@`;
-      });
-
-      // Thay URL trần bằng chữ xanh gọn thay vì dán nguyên link dài
-      str = str.replace(/(https?:\/\/[^\s<)]+)/g, (_m, url) => {
-        const idx = tokens.length;
-        tokens.push(`<a class="blue-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Xem sản phẩm Vinamilk</a>`);
-        return `@@LINK_${idx}@@`;
-      });
-
-      let safe = escapeHtml(str);
-      safe = safe.replace(/@@LINK_(\d+)@@/g, (_m, idx) => tokens[Number(idx)] || "");
-      return safe;
-    }
-
-    function splitMultiItems(text) {
-      // Tách các quy cách/ý cách nhau bởi " / " hoặc ". " khi có nhiều loại giá/HDSD
-      const cleaned = String(text || "").replace(/\*+/g, "").trim();
-      if (!cleaned) return [];
-      const parts = cleaned
-        .split(/\s+\/\s+|(?<=[.!?])\s+(?=[A-ZÀ-Ỹ0-9])/)
-        .map((s) => s.trim())
-        .filter(Boolean);
-      return parts.length > 1 ? parts : [cleaned];
-    }
-
     function formatBotMessage(rawText) {
-      const lines = String(rawText || "").replace(/\r\n/g, "\n").split("\n").map((l) => l.trim()).filter(Boolean);
-      const cards = [];
-      const intro = [];
-      let cur = null;
-      let mode = null;
+      let text = escapeHtml(rawText || "");
 
-      for (const rawLine of lines) {
-        const noStar = rawLine.replace(/\*+/g, "").trim();
-        if (!noStar) continue;
+      // Chuyển link Markdown [chữ](url) thành thẻ <a> gọn gàng
+      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_match, label, url) => {
+        const cleanLabel = label.replace(/\*+/g, "").trim() || "Xem chi tiết sản phẩm";
+        return `<br><a class="product-link" href="${url}" target="_blank" rel="noopener noreferrer">${cleanLabel}</a>`;
+      });
 
-        if (/^[-•]?\s*link sản phẩm\s*:?\s*$/i.test(noStar)) continue;
+      // Chuyển link trần https://... thành chữ "Xem chi tiết sản phẩm" xuống dòng riêng
+      text = text.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, (_match, prefix, url) => {
+        return `${prefix}<br><a class="product-link" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm</a>`;
+      });
 
-        const mdOnly = rawLine.match(/^\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)$/);
-        if (mdOnly) {
-          if (cur) {
-            cur.titleHtml = `<a class="blue-link" href="${escapeHtml(mdOnly[2])}" target="_blank" rel="noopener noreferrer">${escapeHtml(mdOnly[1].trim())}</a>`;
-          } else {
-            cur = {
-              titleHtml: `<a class="blue-link" href="${escapeHtml(mdOnly[2])}" target="_blank" rel="noopener noreferrer">${escapeHtml(mdOnly[1].trim())}</a>`,
-              target: "",
-              prices: [],
-              guides: [],
-              notes: []
-            };
-            cards.push(cur);
-          }
-          mode = null;
-          continue;
-        }
+      // Chuyển **chữ** thành <strong>chữ</strong>
+      text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
 
-        const itemLine = noStar.replace(/^(•|-|\d+\.)\s*/, "");
+      // Làm gọn dấu * đầu dòng thành chấm tròn • và dọn sạch các dấu * thừa
+      text = text.replace(/^\s*\*\s+/gm, "• ");
+      text = text.replace(/\*+/g, "");
 
-        if (/^đối tượng sử dụng\s*:/i.test(itemLine)) {
-          if (!cur) { cur = { titleHtml: "", target: "", prices: [], guides: [], notes: [] }; cards.push(cur); }
-          cur.target = itemLine.replace(/^đối tượng sử dụng\s*:/i, "").trim();
-          mode = "target";
-        } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(itemLine)) {
-          if (!cur) { cur = { titleHtml: "", target: "", prices: [], guides: [], notes: [] }; cards.push(cur); }
-          const rest = itemLine.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
-          if (rest) cur.prices.push(...splitMultiItems(rest));
-          mode = "price";
-        } else if (/^hướng dẫn sử dụng\s*:/i.test(itemLine)) {
-          if (!cur) { cur = { titleHtml: "", target: "", prices: [], guides: [], notes: [] }; cards.push(cur); }
-          const rest = itemLine.replace(/^hướng dẫn sử dụng\s*:/i, "").trim();
-          if (rest) cur.guides.push(...splitMultiItems(rest));
-          mode = "guide";
-        } else if (/^chi tiết\s*:/i.test(itemLine)) {
-          const u = itemLine.replace(/^chi tiết\s*:/i, "").trim();
-          if (cur && /^https?:\/\//i.test(u) && !cur.titleHtml) {
-            cur.titleHtml = `<a class="blue-link" href="${escapeHtml(u)}" target="_blank" rel="noopener noreferrer">Xem sản phẩm</a>`;
-          }
-          mode = null;
-        } else if (cur && mode === "price") {
-          cur.prices.push(...splitMultiItems(itemLine));
-        } else if (cur && mode === "guide") {
-          cur.guides.push(...splitMultiItems(itemLine));
-        } else if (cur && mode === "target") {
-          cur.target = `${cur.target} ${itemLine}`.trim();
-        } else if (cards.length === 0 && !/sữa|kem|susu|dielac|optimum|yoko|green farm|phô mai|váng/i.test(itemLine)) {
-          intro.push(renderRichInline(itemLine));
-        } else {
-          cur = {
-            titleHtml: renderRichInline(itemLine),
-            target: "",
-            prices: [],
-            guides: [],
-            notes: []
-          };
-          cards.push(cur);
-          mode = null;
-        }
-      }
-
-      if (!cards.length) {
-        return renderRichInline(rawText).replace(/\n/g, "<br>");
-      }
-
-      let html = "";
-      if (intro.length) {
-        html += `<div style="margin-bottom:10px;">${intro.join("<br>")}</div>`;
-      }
-
-      for (const c of cards) {
-        html += `<div class="product-card">`;
-        if (c.titleHtml) {
-          html += `<div class="product-title">${c.titleHtml}</div>`;
-        }
-        if (c.target) {
-          html += `<div class="product-section"><span class="product-label">Đối tượng sử dụng:</span> ${renderRichInline(c.target)}</div>`;
-        }
-        if (c.prices.length) {
-          html += `<div class="product-section"><span class="product-label">Giá bán tham khảo:</span>`;
-          for (const pr of c.prices) {
-            html += `<div class="product-subline">${renderRichInline(pr)}</div>`;
-          }
-          html += `</div>`;
-        }
-        if (c.guides.length) {
-          html += `<div class="product-section"><span class="product-label">Hướng dẫn sử dụng:</span>`;
-          for (const gd of c.guides) {
-            html += `<div class="product-subline">${renderRichInline(gd)}</div>`;
-          }
-          html += `</div>`;
-        }
-        html += `</div>`;
-      }
-      return html;
+      // Xuống dòng sạch sẽ
+      text = text.replace(/\n/g, "<br>");
+      return text;
     }
 
     function appendMessage(role, text) {
