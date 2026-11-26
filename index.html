@@ -19,7 +19,7 @@
     }
     header {
       background: #fff;
-      padding: 16px 5%;
+      padding: 14px 5%;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -28,43 +28,86 @@
       top: 0;
       z-index: 900;
     }
+    .brand-left {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+    }
+    .vnm-badge {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: #0213b0;
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 17px;
+      letter-spacing: 0.5px;
+      border: 2px solid #96d1ef;
+    }
     .logo {
-      font-size: 28px;
+      font-size: 25px;
       font-weight: 900;
       letter-spacing: 1.5px;
       color: #0213b0;
+    }
+    nav {
+      display: flex;
+      align-items: center;
+      gap: 24px;
     }
     nav a {
       text-decoration: none;
       color: #0213b0;
       font-weight: 600;
-      margin-left: 24px;
       font-size: 15px;
     }
     nav a:hover { text-decoration: underline; }
 
-    /* Banner chính */
+    /* Banner chính có ảnh sản phẩm + lớp phủ bảo vệ chữ */
     .banner {
-      background: linear-gradient(135deg, #0213b0 0%, #1d35d8 100%);
+      position: relative;
+      background:
+        linear-gradient(90deg, rgba(2, 19, 176, 0.94) 0%, rgba(2, 19, 176, 0.82) 48%, rgba(29, 53, 216, 0.32) 100%),
+        url("https://images.unsplash.com/photo-1550583724-b2692b85b150?auto=format&fit=crop&w=1600&q=80") center / cover no-repeat;
       color: #fff;
-      padding: 64px 5%;
+      padding: 68px 5%;
       display: flex;
       flex-wrap: wrap;
       align-items: center;
       justify-content: space-between;
       gap: 32px;
+      min-height: 390px;
     }
-    .banner-text { max-width: 600px; }
+    .banner-text {
+      position: relative;
+      z-index: 2;
+      max-width: 600px;
+    }
     .banner-tag {
       display: inline-block;
-      background: rgba(255,255,255,0.16);
+      background: rgba(255,255,255,0.18);
       padding: 6px 14px;
       border-radius: 999px;
       font-size: 13px;
       margin-bottom: 16px;
     }
-    .banner h1 { font-size: 40px; line-height: 1.2; margin-bottom: 16px; }
-    .banner p { font-size: 16px; line-height: 1.6; opacity: 0.92; margin-bottom: 24px; }
+    .banner h1 {
+      font-size: 40px;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      text-shadow: 0 2px 12px rgba(0, 0, 0, 0.25);
+    }
+    .banner p {
+      font-size: 16px;
+      line-height: 1.6;
+      opacity: 0.96;
+      margin-bottom: 24px;
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.2);
+    }
     .btn-primary {
       background: #fff;
       color: #0213b0;
@@ -163,8 +206,8 @@
       background: #f4f6fb;
     }
     .msg {
-      max-width: 92%;
-      padding: 13px 16px;
+      max-width: 93%;
+      padding: 14px 16px;
       border-radius: 16px;
       line-height: 1.6;
       font-size: 15px;
@@ -185,45 +228,85 @@
       border-bottom-left-radius: 4px;
     }
     .bot-intro {
-      margin-bottom: 12px;
+      margin-bottom: 10px;
+      color: #1e293b;
+    }
+    .group-banner {
+      display: inline-block;
+      margin: 10px 0 6px;
+      padding: 5px 12px;
+      background: #dbe6ff;
+      color: #0213b0;
+      font-weight: 700;
+      font-size: 15px;
+      border-radius: 8px;
+      border-bottom: 2px solid #93b4f8;
     }
     .product-card {
       background: #ffffff;
       border: 1px solid #c7d4f5;
       border-radius: 14px;
-      padding: 14px 16px;
-      margin-top: 12px;
+      padding: 13px 15px;
+      margin-top: 10px;
       box-shadow: 0 3px 10px rgba(2, 19, 176, 0.05);
     }
     .product-card:first-child {
-      margin-top: 0;
+      margin-top: 4px;
     }
-    .product-title {
-      font-size: 16px;
+    .blue-dot-heading {
+      font-size: 15.5px;
       font-weight: 700;
       color: #0213b0;
-      line-height: 1.4;
-      margin-bottom: 8px;
+      line-height: 1.45;
+      margin-top: 6px;
+      margin-bottom: 4px;
     }
-    .product-row {
+    .blue-dot-heading:first-child {
+      margin-top: 0;
+    }
+    .sub-line {
       font-size: 14.5px;
       line-height: 1.55;
       color: #1e293b;
-      margin-bottom: 6px;
+      margin-top: 3px;
+      padding-left: 14px;
     }
-    .product-row strong {
+    .sub-line strong {
       color: #0213b0;
       font-weight: 600;
     }
+    .plain-line {
+      font-size: 14.5px;
+      line-height: 1.55;
+      color: #1e293b;
+      margin-top: 6px;
+    }
+    .deeplink-box {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px dashed #dbe2f0;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .deeplink-tag {
+      font-family: Consolas, monospace;
+      font-size: 12.5px;
+      color: #1d35d8;
+      background: #f1f5ff;
+      padding: 4px 8px;
+      border-radius: 6px;
+    }
     .product-btn {
       display: inline-block;
-      margin-top: 8px;
-      padding: 8px 14px;
+      padding: 7px 14px;
       border: 1.5px solid #0213b0;
       border-radius: 999px;
       color: #0213b0;
       background: #ffffff;
-      font-size: 13.5px;
+      font-size: 13px;
       font-weight: 700;
       text-decoration: none;
       transition: background 0.15s, color 0.15s;
@@ -235,13 +318,6 @@
     .msg.bot strong {
       color: #0213b0;
       font-weight: 700;
-    }
-    .msg.bot a.product-link {
-      display: inline-block;
-      margin-top: 6px;
-      color: #0213b0;
-      font-weight: 700;
-      text-decoration: underline;
     }
     #chat-form {
       display: flex;
@@ -277,11 +353,14 @@
   </div>
 
   <header>
-    <div class="logo">VINAMILK</div>
+    <a class="brand-left" href="#san-pham">
+      <span class="vnm-badge" aria-hidden="true">V</span>
+      <span class="logo">VINAMILK</span>
+    </a>
     <nav>
       <a href="#san-pham">Sản phẩm</a>
-      <a href="#dinh-duong">Dinh dưỡng</a>
-      <a href="#hop-tac">Hợp tác kinh doanh</a>
+      <a href="#ve-vinamilk">Về Vinamilk</a>
+      <a href="#cau-hoi-thuong-gap">Câu hỏi thường gặp</a>
     </nav>
   </header>
 
@@ -319,6 +398,16 @@
         <button class="ask-btn" type="button" onclick="openChatWithPrompt('Tư vấn sữa bột Vinamilk cho trẻ em và người cao tuổi')">Hỏi AI về dòng này</button>
       </div>
     </div>
+  </section>
+
+  <section class="section" id="ve-vinamilk" style="padding-top: 12px;">
+    <h2>Về Vinamilk</h2>
+    <p class="sub">Thành lập từ năm 1976, Vinamilk tiên phong phát triển hệ thống trang trại chuẩn quốc tế và các giải pháp dinh dưỡng chất lượng cao phục vụ cộng đồng.</p>
+  </section>
+
+  <section class="section" id="cau-hoi-thuong-gap" style="padding-top: 12px;">
+    <h2>Câu hỏi thường gặp</h2>
+    <p class="sub">Bạn có thể hỏi trực tiếp trong khung chat về giá bán theo quy cách (lốc/thùng), đối tượng sử dụng, thành phần và hướng dẫn sử dụng.</p>
   </section>
 
   <button id="chat-toggle" type="button">Chat với AI Vinamilk</button>
@@ -373,6 +462,12 @@
         .replace(/"/g, "&quot;");
     }
 
+    function stripLeadingSymbols(str) {
+      return String(str || "")
+        .replace(/^\s*(?:•|-|\*|·|\+|–|—|\d+[.)])\s*/g, "")
+        .trim();
+    }
+
     function cleanInlineMarkdown(str) {
       return escapeHtml(str || "")
         .replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")
@@ -380,42 +475,149 @@
         .trim();
     }
 
+    function toSlug(name) {
+      return String(name || "san-pham")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/đ/g, "d")
+        .replace(/Đ/g, "D")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-+|-+$/g, "")
+        .slice(0, 48) || "san-pham";
+    }
+
+    function buildDeeplink(title) {
+      return `vinamilk://san-pham/${toSlug(title)}`;
+    }
+
+    function isAgeOrGroupHeading(text) {
+      return /^(trẻ\s+(từ|trên|dưới)|người\s+(cao\s+tuổi|lớn)|nhóm\s+sản\s+phẩm|dòng\s+sản\s+phẩm)/i.test(text) && text.endsWith(":");
+    }
+
+    function isMainBlueLabel(text) {
+      return /^(nhóm|đối\s*tượng(\s*sử\s*dụng)?|giá\s*bán(\s*tham\s*khảo)?|thành\s*phần(\s*chính)?|thông\s*tin\s*dinh\s*dưỡng[^:]*|hướng\s*dẫn\s*sử\s*dụng|chi\s*tiết)\s*:/i.test(text);
+    }
+
+    function splitPriceItems(rawPrice) {
+      const cleaned = stripLeadingSymbols(rawPrice);
+      if (!cleaned) return [];
+      const parts = cleaned
+        .replace(/\s+\band\b\s+|\s+và\s+(?=\d+[.,\d]*\s*đ|dạng\s+|hộp\s+|chai\s+|túi\s+|lốc\s+|thùng\s+)/gi, " | ")
+        .split(/\s*(?:\/|\|)\s*|\n+/)
+        .map((s) => stripLeadingSymbols(s))
+        .filter(Boolean);
+
+      return parts.map((part) => {
+        const colonIdx = part.indexOf(":");
+        if (colonIdx > 0 && colonIdx < 34) {
+          const label = cleanInlineMarkdown(part.slice(0, colonIdx));
+          const val = cleanInlineMarkdown(part.slice(colonIdx + 1));
+          return `<div class="sub-line"><strong>${label}:</strong> ${val}</div>`;
+        }
+        return `<div class="sub-line">${cleanInlineMarkdown(part)}</div>`;
+      });
+    }
+
+    function splitUsageItems(rawUsage) {
+      const cleaned = stripLeadingSymbols(rawUsage);
+      if (!cleaned) return [];
+      const sentences = cleaned
+        .split(/(?<=[.!?])\s+|\n+/)
+        .map((s) => stripLeadingSymbols(s))
+        .filter(Boolean);
+      return sentences.map((s) => `<div class="sub-line">${cleanInlineMarkdown(s)}</div>`);
+    }
+
+    function renderCardHtml(card) {
+      let h = `<div class="product-card">`;
+      if (card.title) {
+        h += `<div class="blue-dot-heading">• ${cleanInlineMarkdown(card.title)}</div>`;
+      }
+      if (card.group) {
+        h += `<div class="blue-dot-heading">• Nhóm: <span style="font-weight:500;color:#1e293b;">${cleanInlineMarkdown(card.group)}</span></div>`;
+      }
+      if (card.target) {
+        h += `<div class="blue-dot-heading">• Đối tượng sử dụng: <span style="font-weight:500;color:#1e293b;">${cleanInlineMarkdown(card.target)}</span></div>`;
+      }
+      if (card.price) {
+        h += `<div class="blue-dot-heading">• Giá bán tham khảo:</div>`;
+        h += splitPriceItems(card.price).join("");
+      }
+      if (card.ingredient) {
+        h += `<div class="blue-dot-heading">• Thành phần chính: <span style="font-weight:500;color:#1e293b;">${cleanInlineMarkdown(card.ingredient)}</span></div>`;
+      }
+      if (card.nutrition) {
+        h += `<div class="blue-dot-heading">• ${card.nutrition}</div>`;
+      }
+      if (card.usage) {
+        h += `<div class="blue-dot-heading">• Hướng dẫn sử dụng:</div>`;
+        h += splitUsageItems(card.usage).join("");
+      }
+      for (const ex of card.extra) {
+        h += `<div class="sub-line">${ex}</div>`;
+      }
+      const linkTitle = card.title || "san-pham";
+      const deeplink = card.deeplink || buildDeeplink(linkTitle);
+      const hrefTarget = card.webUrl || deeplink;
+      const targetAttr = card.webUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
+      h += `<div class="deeplink-box">`;
+      h += `<span class="deeplink-tag">${escapeHtml(deeplink)}</span>`;
+      h += `<a class="product-btn" href="${escapeHtml(hrefTarget)}"${targetAttr}>Mở sản phẩm →</a>`;
+      h += `</div>`;
+      h += `</div>`;
+      return h;
+    }
+
     function formatPlainBotMessage(rawText) {
-      let text = escapeHtml(rawText || "");
-      text = text.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, (_m, _label, url) => {
-        return `<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
-      });
-      text = text.replace(/(^|[\s(])(https?:\/\/[^\s<)]+)/g, (_m, prefix, url) => {
-        return `${prefix}<br><a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
-      });
-      text = text.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
-      text = text.replace(/^\s*\*\s+/gm, "• ");
-      text = text.replace(/\*+/g, "");
-      text = text.replace(/\n/g, "<br>");
-      return text;
+      const lines = String(rawText || "").replace(/\r\n/g, "\n").split("\n");
+      const out = [];
+      for (const rawLine of lines) {
+        const stripped = stripLeadingSymbols(rawLine.replace(/\*+/g, ""));
+        if (!stripped) continue;
+
+        const mdMatch = stripped.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
+        const urlMatch = stripped.match(/(https?:\/\/[^\s<)]+)/);
+        if (mdMatch || urlMatch) {
+          const url = mdMatch ? mdMatch[2] : urlMatch[1];
+          out.push(`<div class="plain-line"><a class="product-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a></div>`);
+          continue;
+        }
+
+        if (isAgeOrGroupHeading(stripped)) {
+          out.push(`<div class="group-banner">${cleanInlineMarkdown(stripped)}</div>`);
+        } else if (isMainBlueLabel(stripped)) {
+          out.push(`<div class="blue-dot-heading">• ${cleanInlineMarkdown(stripped)}</div>`);
+        } else {
+          out.push(`<div class="plain-line">${cleanInlineMarkdown(stripped)}</div>`);
+        }
+      }
+      return out.join("");
     }
 
     function formatBotMessage(rawText) {
       const cleanedRaw = String(rawText || "").replace(/\r\n/g, "\n").trim();
       const lines = cleanedRaw.split("\n");
 
-      const cards = [];
+      const blocks = [];
       const introLines = [];
-      const outroLines = [];
       let currentCard = null;
       let currentField = null;
 
-      function isProductTitleLine(line) {
-        const trimmed = line.trim();
-        if (!trimmed) return false;
-        if (/^(•|-|\*|\d+\.)\s*/.test(trimmed)) return false;
-        if (/^(đối tượng sử dụng|giá bán|giá bán tham khảo|link sản phẩm|chi tiết|thành phần|thông tin dinh dưỡng|hướng dẫn sử dụng)\s*:/i.test(trimmed.replace(/\*+/g, ""))) {
-          return false;
+      function flushCard() {
+        if (currentCard) {
+          blocks.push(renderCardHtml(currentCard));
+          currentCard = null;
+          currentField = null;
         }
-        if (trimmed.endsWith(":")) return false;
-        const boldMatch = trimmed.match(/^\*\*([^*]+)\*\*$/);
-        if (boldMatch) return true;
-        return cards.length > 0 || /sữa|kem|phô mai|váng sữa|yoghurt|susu|dielac|optimum|yoko|green farm|adm|ngôi sao/i.test(trimmed);
+      }
+
+      function isProductTitle(line, stripped) {
+        if (!stripped) return false;
+        if (isAgeOrGroupHeading(stripped) || isMainBlueLabel(stripped)) return false;
+        if (stripped.endsWith(":")) return false;
+        if (/^\*\*([^*]+)\*\*$/.test(line.trim())) return true;
+        return /^(sữa|kem|phô\s*mai|váng\s*sữa|yoghurt|susu|dielac|optimum|yoko|green\s*farm|adm|ngôi\s*sao)/i.test(stripped);
       }
 
       for (const rawLine of lines) {
@@ -423,81 +625,109 @@
         if (!line) continue;
 
         const plainLine = line.replace(/\*+/g, "").trim();
+        const stripped = stripLeadingSymbols(plainLine);
+        if (!stripped) continue;
 
         // Bỏ dòng tiêu đề "Link sản phẩm:" thừa
-        if (/^[-•*]?\s*link sản phẩm\s*:?\s*$/i.test(plainLine)) {
+        if (/^link\s*sản\s*phẩm\s*:?\s*$/i.test(stripped)) {
           continue;
         }
 
-        // Bắt các dòng chứa URL
+        // Bắt link URL
         const mdLinkMatch = line.match(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/);
         const rawUrlMatch = line.match(/(https?:\/\/[^\s<)]+)/);
-        if ((mdLinkMatch || rawUrlMatch) && !/^[-•*]?\s*(đối tượng|giá bán)/i.test(plainLine)) {
+        if ((mdLinkMatch || rawUrlMatch) && !/^(đối\s*tượng|giá\s*bán)/i.test(stripped)) {
           const url = mdLinkMatch ? mdLinkMatch[2] : rawUrlMatch[1];
           if (currentCard) {
-            currentCard.url = url;
+            currentCard.webUrl = url;
           } else {
-            outroLines.push(`<a class="product-btn" href="${url}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`);
+            blocks.push(`<div class="plain-line"><a class="product-btn" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a></div>`);
           }
           currentField = null;
           continue;
         }
 
-        if (isProductTitleLine(line)) {
-          if (currentCard) cards.push(currentCard);
-          const titleClean = line.replace(/^\*\*([^*]+)\*\*$/, "$1").replace(/\*+/g, "").trim();
+        // Nhóm / độ tuổi nổi bật, không dấu chấm
+        if (isAgeOrGroupHeading(stripped)) {
+          flushCard();
+          blocks.push(`<div class="group-banner">${cleanInlineMarkdown(stripped)}</div>`);
+          continue;
+        }
+
+        // Tên sản phẩm
+        if (isProductTitle(line, stripped)) {
+          flushCard();
           currentCard = {
-            title: titleClean,
+            title: stripped,
+            group: "",
             target: "",
             price: "",
+            ingredient: "",
+            nutrition: "",
+            usage: "",
             extra: [],
-            url: ""
+            deeplink: buildDeeplink(stripped),
+            webUrl: ""
           };
           currentField = null;
           continue;
         }
 
         if (currentCard) {
-          const itemStripped = plainLine.replace(/^(•|-|\*)\s*/, "");
-
-          if (/^đối tượng sử dụng\s*:/i.test(itemStripped)) {
-            currentCard.target = itemStripped.replace(/^đối tượng sử dụng\s*:/i, "").trim();
+          if (/^nhóm\s*:/i.test(stripped)) {
+            currentCard.group = stripped.replace(/^nhóm\s*:/i, "").trim();
+            currentField = "group";
+          } else if (/^đối\s*tượng(\s*sử\s*dụng)?\s*:/i.test(stripped)) {
+            currentCard.target = stripped.replace(/^đối\s*tượng(\s*sử\s*dụng)?\s*:/i, "").trim();
             currentField = "target";
-          } else if (/^giá bán(\s*tham khảo)?\s*:/i.test(itemStripped)) {
-            currentCard.price = itemStripped.replace(/^giá bán(\s*tham khảo)?\s*:/i, "").trim();
+          } else if (/^giá\s*bán(\s*tham\s*khảo)?\s*:/i.test(stripped)) {
+            currentCard.price = stripped.replace(/^giá\s*bán(\s*tham\s*khảo)?\s*:/i, "").trim();
             currentField = "price";
-          } else if (/^chi tiết\s*:/i.test(itemStripped)) {
-            const possibleUrl = itemStripped.replace(/^chi tiết\s*:/i, "").trim();
+          } else if (/^thành\s*phần(\s*chính)?\s*:/i.test(stripped)) {
+            currentCard.ingredient = stripped.replace(/^thành\s*phần(\s*chính)?\s*:/i, "").trim();
+            currentField = "ingredient";
+          } else if (/^thông\s*tin\s*dinh\s*dưỡng[^:]*:/i.test(stripped)) {
+            const labelMatch = stripped.match(/^([^:]+:)/);
+            const labelText = labelMatch ? labelMatch[1].trim() : "Thông tin dinh dưỡng:";
+            const bodyText = stripped.replace(/^[^:]+:\s*/, "").trim();
+            currentCard.nutrition = bodyText
+              ? `${cleanInlineMarkdown(labelText)} <span style="font-weight:500;color:#1e293b;">${cleanInlineMarkdown(bodyText)}</span>`
+              : cleanInlineMarkdown(labelText);
+            currentField = "nutrition";
+          } else if (/^hướng\s*dẫn\s*sử\s*dụng\s*:/i.test(stripped)) {
+            currentCard.usage = stripped.replace(/^hướng\s*dẫn\s*sử\s*dụng\s*:/i, "").trim();
+            currentField = "usage";
+          } else if (/^chi\s*tiết\s*:/i.test(stripped)) {
+            const possibleUrl = stripped.replace(/^chi\s*tiết\s*:/i, "").trim();
             if (/^https?:\/\//i.test(possibleUrl)) {
-              currentCard.url = possibleUrl;
+              currentCard.webUrl = possibleUrl;
             }
             currentField = null;
-          } else if (/^(•|-|\*)\s+/.test(line)) {
-            const bulletText = line.replace(/^(•|-|\*)\s+/, "");
-            if (currentField === "price") {
-              currentCard.price = currentCard.price
-                ? `${currentCard.price}<br>• ${cleanInlineMarkdown(bulletText)}`
-                : cleanInlineMarkdown(bulletText);
-            } else {
-              currentCard.extra.push(`• ${cleanInlineMarkdown(bulletText)}`);
-            }
           } else {
-            if (currentField === "target") {
-              currentCard.target = `${currentCard.target} ${itemStripped}`.trim();
+            if (currentField === "group") {
+              currentCard.group = `${currentCard.group} ${stripped}`.trim();
+            } else if (currentField === "target") {
+              currentCard.target = `${currentCard.target} ${stripped}`.trim();
             } else if (currentField === "price") {
-              currentCard.price = `${currentCard.price}<br>${cleanInlineMarkdown(line)}`;
+              currentCard.price = currentCard.price ? `${currentCard.price} / ${stripped}` : stripped;
+            } else if (currentField === "ingredient") {
+              currentCard.ingredient = `${currentCard.ingredient} ${stripped}`.trim();
+            } else if (currentField === "nutrition") {
+              currentCard.nutrition = `${currentCard.nutrition} ${cleanInlineMarkdown(stripped)}`.trim();
+            } else if (currentField === "usage") {
+              currentCard.usage = `${currentCard.usage} ${stripped}`.trim();
             } else {
-              currentCard.extra.push(cleanInlineMarkdown(line));
+              currentCard.extra.push(cleanInlineMarkdown(stripped));
             }
           }
         } else {
-          introLines.push(cleanInlineMarkdown(line));
+          introLines.push(cleanInlineMarkdown(stripped));
         }
       }
 
-      if (currentCard) cards.push(currentCard);
+      flushCard();
 
-      if (!cards.length) {
+      if (!blocks.length) {
         return formatPlainBotMessage(cleanedRaw);
       }
 
@@ -505,29 +735,7 @@
       if (introLines.length) {
         html += `<div class="bot-intro">${introLines.join("<br>")}</div>`;
       }
-
-      for (const c of cards) {
-        html += `<div class="product-card">`;
-        html += `<div class="product-title">${cleanInlineMarkdown(c.title)}</div>`;
-        if (c.target) {
-          html += `<div class="product-row">• <strong>Đối tượng sử dụng:</strong> ${cleanInlineMarkdown(c.target)}</div>`;
-        }
-        if (c.price) {
-          html += `<div class="product-row">• <strong>Giá bán tham khảo:</strong> ${c.price}</div>`;
-        }
-        for (const ex of c.extra) {
-          html += `<div class="product-row">${ex}</div>`;
-        }
-        if (c.url) {
-          html += `<a class="product-btn" href="${escapeHtml(c.url)}" target="_blank" rel="noopener noreferrer">Xem chi tiết sản phẩm →</a>`;
-        }
-        html += `</div>`;
-      }
-
-      if (outroLines.length) {
-        html += `<div style="margin-top:10px;">${outroLines.join("<br>")}</div>`;
-      }
-
+      html += blocks.join("");
       return html;
     }
 
