@@ -1,27 +1,19 @@
-import csv
 import os
 import re
+import csv
+import unicodedata
 from datetime import datetime
 from typing import List, Optional
 
-from dotenv import load_dotenv
+import pandas as pd
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from pydantic import BaseModel
 from google import genai
 from google.genai import types
-from openpyxl import load_workbook
-from pydantic import BaseModel
 
-load_dotenv()
-
-api_key = os.getenv("GEMINI_API_KEY")
-if not api_key:
-    raise RuntimeError("Thiếu GEMINI_API_KEY trong file .env")
-
-client = genai.Client(api_key=api_key)
-
-app = FastAPI(title="Vinamilk AI Business Chatbot")
+app = FastAPI(title="Vinamilk AI Customer Assistant")
 
 app.add_middleware(
     CORSMiddleware,
@@ -31,214 +23,202 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-EXCEL_PATH = "VINAMILK.xlsx"
-PRODUCTS: List[dict] = []
+EXCEL_FILE = "VINAMILK.xlsx"
+LOG_FILE = "chat_history.csv"
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "").strip()
 
-
-def load_products_from_excel(path: str) -> List[dict]:
-    if not os.path.exists(path):
-        print(f"Cảnh báo: Không tìm thấy file {path}")
-        return []
-
-    wb = load_workbook(filename=path, read_only=True, data_only=True)
-    ws = wb.active
-    rows_iter = ws.iter_rows(values_only=True)
-    headers_raw = next(rows_iter, None)
-    if not headers_raw:
-        wb.close()
-        return []
-
-    headers = [str(h or "").strip() for h in headers_raw]
-    items: List[dict] = []
-
-    for r in rows_iter:
-        if not r or all(v is None or str(v).strip() == "" for v in r):
-            continue
-        row_map = {
-            headers[i]: str(r[i] if i < len(r) and r[i] is not None else "").strip()
-            for i in range(len(headers))
-            if headers[i]
-        }
-        items.append({
-            "ten": row_map.get("Tên sản phẩm", ""),
-            "nhom": row_map.get("Nhóm sản phẩm", ""),
-            "doi_tuong": row_map.get("Đối tượng sử dụng", ""),
-            "thanh_phan": row_map.get("Thành phần", ""),
-            "dinh_duong": row_map.get("Thông tin dinh dưỡng", ""),
-            "huong_dan": row_map.get("Hướng dẫn sử dụng", ""),
-            "gia": row_map.get("Giá bán", ""),
-            "link": row_map.get("Nguồn thông tin", ""),
-        })
-
-    wb.close()
-    return items
-
-
-PRODUCTS = load_products_from_excel(EXCEL_PATH)
-print(f"Đã nạp thành công {len(PRODUCTS)} sản phẩm từ {EXCEL_PATH}")
-
-
-def find_matching_products(query: str, top_k: int = 6) -> List[dict]:
-    if not PRODUCTS:
-        return []
-
-    tokens = [w for w in re.findall(r"\w+", query.lower()) if len(w) >= 2]
-    scored = []
-    for p in PRODUCTS:
-        searchable = f"{p['ten']} {p['nhom']} {p['doi_tuong']} {p['thanh_phan']} {p['dinh_duong']}".lower()
-        name_text = f"{p['ten']} {p['nhom']}".lower()
-        score = 0
-        for t in tokens:
-            if t in name_text:
-                score += 4
-            elif t in searchable:
-                score += 1
-        if score > 0:
-            scored.append((score, p))
-
-    scored.sort(key=lambda x: x[0], reverse=True)
-    return [item[1] for item in scored[:top_k]] if scored else PRODUCTS[:4]
-
-
-def search_relevant_products(query: str, top_k: int = 6) -> str:
-    selected = find_matching_products(query, top_k=top_k)
-    if not selected:
-        return "Chưa có dữ liệu sản phẩm từ file Excel."
-
-    blocks = []
-    for idx, p in enumerate(selected, 1):
-        blocks.append(
-            f"--- Sản phẩm {idx}: {p['ten']} ---\n"
-            f"- Nhóm: {p['nhom']}\n"
-            f"- Đối tượng sử dụng: {p['doi_tuong']}\n"
-            f"- Giá bán tham khảo: {p['gia']}\n"
-            f"- Thành phần: {p['thanh_phan']}\n"
-            f"- Thông tin dinh dưỡng: {p['dinh_duong']}\n"
-            f"- Hướng dẫn sử dụng: {p['huong_dan']}\n"
-            f"- Link sản phẩm: {p['link']}"
-        )
-    return "\n\n".join(blocks)
-
-
-def build_direct_excel_fallback(query: str) -> str:
-    """Trả lời ngay lập tức từ dữ liệu VINAMILK.xlsx nếu API AI bị nghẽn."""
-    matched = find_matching_products(query, top_k=4)
-    if not matched:
-        return (
-            "Hiện tại hệ thống dữ liệu sản phẩm Vinamilk đang sẵn sàng. "
-            "Bạn có thể hỏi cụ thể tên sản phẩm (ví dụ: socola, Dielac, Optimum...) để mình tra cứu nhé!"
-        )
-
-    lines = [
-        "Dưới đây là thông tin sản phẩm khớp nhất từ cơ sở dữ liệu Vinamilk của hệ thống:\n"
-    ]
-    for p in matched:
-        lines.append(f"• {p['ten']} ({p['nhom']})")
-        if p["gia"]:
-            lines.append(f"  - Giá bán: {p['gia']}")
-        if p["doi_tuong"]:
-            lines.append(f"  - Đối tượng sử dụng: {p['doi_tuong']}")
-        if p["link"]:
-            lines.append(f"  - Chi tiết: {p['link']}")
-    return "\n".join(lines)
-
-
-def log_conversation(user_msg: str, bot_reply: str):
-    log_file = "chat_history.csv"
-    file_exists = os.path.exists(log_file)
-    try:
-        with open(log_file, mode="a", newline="", encoding="utf-8-sig") as f:
-            writer = csv.writer(f)
-            if not file_exists:
-                writer.writerow(["Thoi_gian", "Cau_hoi_khach_hang", "Phan_hoi_AI"])
-            writer.writerow([datetime.now().strftime("%Y-%m-%d %H:%M:%S"), user_msg, bot_reply])
-    except OSError:
-        pass
-
-
-BASE_SYSTEM_INSTRUCTION = """
-Bạn là Trợ lý AI Chăm sóc Khách hàng & Tư vấn Kinh doanh của Vinamilk.
-Quy tắc tư vấn:
-1. Ưu tiên sử dụng DỮ LIỆU SẢN PHẨM VINAMILK được cung cấp để trả lời ngắn gọn, đúng tên sản phẩm, giá bán, đối tượng sử dụng và gửi kèm link sản phẩm nếu có.
-2. Trả lời nhanh gọn, rõ ràng, thân thiện, có gạch đầu dòng.
-3. Không tự bịa giá bán nếu không có trong dữ liệu.
-"""
-
-FALLBACK_MODELS = [
-    "gemini-3.5-flash-lite",
-    "gemini-3.1-flash-lite",
-    "gemini-3.8-flash",
+MODEL_CANDIDATES = [
+    "gemini-2.5-flash-lite",
+    "gemini-2.5-flash",
+    "gemini-2.0-flash-lite",
 ]
 
 
-class ChatMessage(BaseModel):
+def normalize_text(text: str) -> str:
+    text = str(text or "").strip().lower()
+    text = unicodedata.normalize("NFD", text)
+    text = "".join(ch for ch in text if unicodedata.category(ch) != "Mn")
+    text = text.replace("đ", "d")
+    text = re.sub(r"[^a-z0-9\s]", " ", text)
+    return re.sub(r"\s+", " ", text).strip()
+
+
+def load_product_links(excel_path: str) -> List[dict]:
+    """Chỉ trích xuất tên sản phẩm và link dẫn tới trang sản phẩm từ file Excel."""
+    if not os.path.exists(excel_path):
+        return []
+    try:
+        df = pd.read_excel(excel_path).fillna("")
+    except Exception:
+        return []
+
+    records = []
+    for _, row in df.iterrows():
+        name = ""
+        url = ""
+        for col in df.columns:
+            col_norm = normalize_text(col)
+            val = str(row[col]).strip()
+            if not val:
+                continue
+            if not url and ("http://" in val or "https://" in val):
+                match = re.search(r"https?://[^\s)\]]+", val)
+                if match:
+                    url = match.group(0)
+            if not name and any(k in col_norm for k in ["ten", "san pham", "product", "name"]):
+                if not val.startswith("http"):
+                    name = val
+        if not name:
+            for col in df.columns:
+                val = str(row[col]).strip()
+                if val and not val.startswith("http") and len(val) > 3:
+                    name = val
+                    break
+        if name and url:
+            records.append({
+                "name": name,
+                "norm": normalize_text(name),
+                "url": url,
+            })
+    return records
+
+
+PRODUCT_LINKS = load_product_links(EXCEL_FILE)
+
+
+def find_matching_links(query: str, limit: int = 5) -> List[dict]:
+    q_norm = normalize_text(query)
+    if not q_norm or not PRODUCT_LINKS:
+        return []
+    tokens = [t for t in q_norm.split() if len(t) >= 2 and t not in {"sua", "vinamilk", "gia", "bao", "nhieu", "loai", "cho", "cua", "tu", "van"}]
+    if not tokens:
+        tokens = [t for t in q_norm.split() if len(t) >= 2]
+
+    scored = []
+    for item in PRODUCT_LINKS:
+        score = sum(1 for tk in tokens if tk in item["norm"])
+        if q_norm in item["norm"]:
+            score += 3
+        if score > 0:
+            scored.append((score, item))
+
+    scored.sort(key=lambda x: x[0], reverse=True)
+    return [item for _, item in scored[:limit]]
+
+
+def log_chat(user_msg: str, bot_reply: str, model_used: str):
+    file_exists = os.path.exists(LOG_FILE)
+    try:
+        with open(LOG_FILE, mode="a", newline="", encoding="utf-8-sig") as f:
+            writer = csv.writer(f)
+            if not file_exists:
+                writer.writerow(["timestamp", "model", "user_message", "bot_reply"])
+            writer.writerow([datetime.now().isoformat(timespec="seconds"), model_used, user_msg, bot_reply])
+    except Exception:
+        pass
+
+
+SYSTEM_INSTRUCTION = """
+Bạn là Trợ lý AI Tư vấn Khách hàng chính thức của Vinamilk (website: https://www.vinamilk.com.vn/).
+
+Nguyên tắc trả lời:
+1. Trả lời tự nhiên, lịch sự, chính xác dựa trên kiến thức về sản phẩm, dinh dưỡng và thông tin công bố trên website chính thức của Vinamilk (https://www.vinamilk.com.vn/).
+2. Tuyệt đối KHÔNG tự bịa số liệu chi tiết nếu không chắc chắn; với giá bán hoặc quy cách đóng gói, nêu mức tham khảo theo các dòng phổ biến trên vinamilk.com.vn và lưu ý giá có thể thay đổi tùy kênh bán/chương trình khuyến mãi.
+3. Trình bày mạch lạc, dễ đọc:
+   - Mở đầu bằng 1 câu chào/dẫn ngắn gọn.
+   - Khi giới thiệu sản phẩm, ghi rõ tên sản phẩm trên một dòng riêng, bên dưới chia rõ các mục:
+     Đối tượng sử dụng: ...
+     Giá bán tham khảo: ... (nếu có nhiều quy cách thì ngăn cách bằng dấu "/" để giao diện tự tách dòng)
+     Đặc điểm / Thành phần chính: ...
+     Hướng dẫn sử dụng: ...
+   - Nếu được cung cấp danh sách link sản phẩm khớp từ hệ thống bên dưới, hãy gắn đúng link đó ở cuối mỗi sản phẩm tương ứng (mỗi link trên 1 dòng riêng). Nếu không có link khớp trong danh sách, gắn link danh mục chính thức https://www.vinamilk.com.vn/
+4. Trả lời bằng tiếng Việt rõ ràng, không dùng ký tự trang trí rườm rà.
+""".strip()
+
+
+class HistoryItem(BaseModel):
     role: str
     text: str
 
 
 class ChatRequest(BaseModel):
     message: str
-    history: Optional[List[ChatMessage]] = []
-
-
-class ChatResponse(BaseModel):
-    reply: str
+    history: Optional[List[HistoryItem]] = []
 
 
 @app.get("/")
-def serve_homepage():
+async def serve_home():
     return FileResponse("index.html")
 
 
-@app.post("/chat", response_model=ChatResponse)
-def chat_endpoint(req: ChatRequest):
-    user_msg = req.message.strip()
-    if not user_msg:
+@app.get("/health")
+async def health_check():
+    return {"status": "ok", "linked_products": len(PRODUCT_LINKS)}
+
+
+@app.post("/chat")
+async def chat_endpoint(payload: ChatRequest):
+    user_message = (payload.message or "").strip()
+    if not user_message:
         raise HTTPException(status_code=400, detail="Tin nhắn không được để trống.")
 
-    product_context = search_relevant_products(user_msg, top_k=6)
-    full_instruction = (
-        f"{BASE_SYSTEM_INSTRUCTION}\n\n"
-        f"=== DỮ LIỆU SẢN PHẨM VINAMILK TRUY XUẤT TỪ HỆ THỐNG ===\n"
-        f"{product_context}"
-    )
+    if not GEMINI_API_KEY:
+        raise HTTPException(status_code=500, detail="Chưa cấu hình biến môi trường GEMINI_API_KEY trên server.")
+
+    matched_links = find_matching_links(user_message, limit=5)
+    link_hint = ""
+    if matched_links:
+        lines = [f"- {m['name']}: {m['url']}" for m in matched_links]
+        link_hint = (
+            "\n\n[Danh sách link sản phẩm tham chiếu từ hệ thống — chỉ dùng đúng đường link này nếu nhắc tới sản phẩm tương ứng, KHÔNG lấy thông tin mô tả khác ngoài link]:\n"
+            + "\n".join(lines)
+        )
+
+    client = genai.Client(api_key=GEMINI_API_KEY)
 
     contents = []
-    if req.history:
-        for item in req.history[-6:]:
-            role = "model" if item.role == "model" else "user"
-            contents.append(
-                types.Content(
-                    role=role,
-                    parts=[types.Part.from_text(text=item.text)],
-                )
-            )
+    for item in (payload.history or [])[-6:]:
+        role = "user" if item.role == "user" else "model"
+        if item.text:
+            contents.append(types.Content(role=role, parts=[types.Part.from_text(text=item.text)]))
 
     contents.append(
         types.Content(
             role="user",
-            parts=[types.Part.from_text(text=user_msg)],
+            parts=[types.Part.from_text(text=user_message + link_hint)],
         )
     )
 
-    for model_name in FALLBACK_MODELS:
+    last_error = None
+    for model_name in MODEL_CANDIDATES:
         try:
             response = client.models.generate_content(
                 model=model_name,
                 contents=contents,
                 config=types.GenerateContentConfig(
-                    system_instruction=full_instruction,
-                    temperature=0.2,
+                    system_instruction=SYSTEM_INSTRUCTION,
+                    temperature=0.4,
+                    max_output_tokens=1000,
                 ),
             )
-            if response.text and response.text.strip():
-                reply_text = response.text.strip()
-                log_conversation(user_msg, reply_text)
-                return ChatResponse(reply=reply_text)
-        except Exception:
+            reply_text = (response.text or "").strip()
+            if reply_text:
+                log_chat(user_message, reply_text, model_name)
+                return {"reply": reply_text, "model": model_name}
+        except Exception as exc:
+            last_error = str(exc)
             continue
 
-    # Nếu tất cả model AI gặp sự cố/quá tải, trả ngay dữ liệu thực tế từ Excel
-    fallback_reply = build_direct_excel_fallback(user_msg)
-    log_conversation(user_msg, fallback_reply)
-    return ChatResponse(reply=fallback_reply)
+    fallback_reply = (
+        "Chào bạn, hiện hệ thống AI của Vinamilk đang tạm thời bận. "
+        "Bạn có thể tham khảo trực tiếp danh mục sản phẩm và thông tin dinh dưỡng mới nhất tại trang chủ chính thức:\n"
+        "https://www.vinamilk.com.vn/"
+    )
+    if matched_links:
+        links_str = "\n".join(f"{m['name']}\n{m['url']}" for m in matched_links[:3])
+        fallback_reply = (
+            "Chào bạn, hiện trợ lý AI đang quá tải nhẹ. Dưới đây là các đường dẫn sản phẩm Vinamilk liên quan để bạn xem nhanh:\n"
+            + links_str
+        )
+    log_chat(user_message, f"[FALLBACK] {last_error}", "fallback")
+    return {"reply": fallback_reply, "model": "fallback"}

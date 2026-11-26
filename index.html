@@ -528,7 +528,7 @@
     }
 
     function isFieldLine(text) {
-      return /^(nhóm|đối\s*tượng(\s*sử\s*dụng)?|giá\s*bán(\s*tham\s*khảo)?|thành\s*phần(\s*chính)?|thông\s*tin\s*dinh\s*dưỡng[^:]*|hướng\s*dẫn\s*sử\s*dụng|bảo\s*quản|quy\s*cách|chi\s*tiết)\s*:/i.test(text);
+      return /^(nhóm|đối\s*tượng(\s*sử\s*dụng)?|giá\s*bán(\s*tham\s*khảo)?|thành\s*phần(\s*chính)?|đặc\s*điểm[^:]*|thông\s*tin\s*dinh\s*dưỡng[^:]*|hướng\s*dẫn\s*sử\s*dụng|bảo\s*quản|quy\s*cách|chi\s*tiết)\s*:/i.test(text);
     }
 
     function looksLikeProductName(rawLine, cleaned) {
@@ -583,7 +583,7 @@
         html += `<div class="info-block"><span class="info-label">Giá bán tham khảo:</span>${formatSubItems(card.price, "price")}</div>`;
       }
       if (card.ingredient) {
-        html += `<div class="info-block"><span class="info-label">Thành phần chính:</span> ${escapeHtml(card.ingredient)}</div>`;
+        html += `<div class="info-block"><span class="info-label">Đặc điểm / Thành phần:</span> ${escapeHtml(card.ingredient)}</div>`;
       }
       if (card.nutrition) {
         html += `<div class="info-block"><span class="info-label">${escapeHtml(card.nutritionLabel)}</span> ${escapeHtml(card.nutrition)}</div>`;
@@ -601,12 +601,11 @@
       }
 
       const deeplink = buildDeeplink(card.title || "san-pham");
-      const targetHref = card.webUrl || deeplink;
-      const targetAttrs = card.webUrl ? ' target="_blank" rel="noopener noreferrer"' : "";
+      const targetHref = card.webUrl || "https://www.vinamilk.com.vn/";
 
       html += `<div class="deeplink-footer">`;
       html += `<span class="deeplink-label" title="${escapeHtml(deeplink)}">${escapeHtml(deeplink)}</span>`;
-      html += `<a class="product-btn" href="${escapeHtml(targetHref)}"${targetAttrs}>Mở sản phẩm →</a>`;
+      html += `<a class="product-btn" href="${escapeHtml(targetHref)}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a>`;
       html += `</div>`;
       html += `</div>`;
       return html;
@@ -649,7 +648,7 @@
         out += `<div class="general-list">${items.join("")}</div>`;
       }
       if (standaloneUrl) {
-        out += `<div class="deeplink-footer"><span class="deeplink-label">vinamilk://san-pham</span><a class="product-btn" href="${escapeHtml(standaloneUrl)}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a></div>`;
+        out += `<div class="deeplink-footer"><span class="deeplink-label">vinamilk://trang-chu</span><a class="product-btn" href="${escapeHtml(standaloneUrl)}" target="_blank" rel="noopener noreferrer">Mở sản phẩm →</a></div>`;
       }
       return out || `<div class="bot-intro">${escapeHtml(cleanText(rawText))}</div>`;
     }
@@ -680,7 +679,6 @@
         const rawUrl = trimmed.match(/(https?:\/\/[^\s<)]+)/);
         const cleaned = cleanText(trimmed.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, "$1").replace(/(https?:\/\/[^\s<)]+)/g, ""));
 
-        // Bắt URL bất kể nằm chung dòng hay riêng dòng
         if (mdLink || rawUrl) {
           const url = mdLink ? mdLink[2] : rawUrl[1];
           if (card) {
@@ -695,14 +693,12 @@
 
         if (!cleaned || /^link\s*sản\s*phẩm\s*:?$/i.test(cleaned)) continue;
 
-        // Tiêu đề nhóm / độ tuổi
         if (isGroupHeader(cleaned)) {
           flushCard();
           blocks.push(`<div class="group-banner">${escapeHtml(cleaned)}</div>`);
           continue;
         }
 
-        // Tên sản phẩm mới
         if (looksLikeProductName(trimmed, cleaned)) {
           flushCard();
           hasAnyProduct = true;
@@ -721,7 +717,6 @@
           continue;
         }
 
-        // Nếu đang có trường thông tin sản phẩm mà chưa có tên sản phẩm (trường hợp hỏi chi tiết 1 sản phẩm)
         if (!card && isFieldLine(cleaned) && introLines.length) {
           const introJoined = introLines.join(" ");
           const matchName = introJoined.match(/sản phẩm\s+([^:]+):?$/i);
@@ -752,8 +747,8 @@
           } else if (/^giá\s*bán(\s*tham\s*khảo)?\s*:/i.test(cleaned)) {
             card.price = cleaned.replace(/^giá\s*bán(\s*tham\s*khảo)?\s*:/i, "").trim();
             field = "price";
-          } else if (/^thành\s*phần(\s*chính)?\s*:/i.test(cleaned)) {
-            card.ingredient = cleaned.replace(/^thành\s*phần(\s*chính)?\s*:/i, "").trim();
+          } else if (/^(đặc\s*điểm[^:]*|thành\s*phần(\s*chính)?)\s*:/i.test(cleaned)) {
+            card.ingredient = cleaned.replace(/^(đặc\s*điểm[^:]*|thành\s*phần(\s*chính)?)\s*:/i, "").trim();
             field = "ingredient";
           } else if (/^thông\s*tin\s*dinh\s*dưỡng[^:]*:/i.test(cleaned)) {
             const m = cleaned.match(/^([^:]+:)\s*(.*)$/);
